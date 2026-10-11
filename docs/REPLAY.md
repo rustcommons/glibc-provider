@@ -79,6 +79,10 @@ Local: WSL Ubuntu 24.04, GNU binutils 2.42.
 
 glibc itself is only supported with GCC, so this result is expected.
 
+**Decision (2026-10-11):** linux-abi-tools' `source` mode compiles with the host's
+GCC. The full reasoning, including what goes wrong with Clang, is in
+[PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md#why-source-mode-compiles-with-gcc-not-clang).
+
 Build failures per release (Clang 18):
 
 | Releases | Objects that fail to build |

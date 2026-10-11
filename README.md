@@ -17,7 +17,9 @@ design is in linux-abi-tools'
 
 **Status:** data collected and verified for all 28 releases. Rebuilding with the
 host's GCC reproduces every release's objects ([docs/REPLAY.md](docs/REPLAY.md)); Clang
-cannot for 2.17–2.42. The published crate `glibc-provider-sources` is not released yet.
+cannot for 2.17–2.42, because it ignores attributes glibc's sources apply after a
+definition and would turn hidden symbols into exported ones. A local build therefore
+uses the host's GCC, as glibc itself requires. The published crate `glibc-provider-sources` is not released yet.
 
 ## Where the data comes from
 
