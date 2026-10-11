@@ -1,0 +1,9 @@
+key	value
+release	2.37
+archive	glibc-2.37.tar.xz
+archive_sha256	2257eff111a1815d74f46856daaf40b019c1e553156c69d48ba0cbfc1bb91a43
+collector	0.1.0
+target.crt1.o	e6b4fd72c3c8eea95a12fc64ccb4f80a55fc4111178e4bdc2fe8286fe13c03f3
+target.crti.o	e1291f83a580f36381ede122c26ce630210f6e5ff88080da1bcfdbc63d704b3a
+target.crtn.o	820c70f826e3f3a5c7bace885aba524db8cd446306fa5a4e7ba39aec7d958719
+target.libc_nonshared.a	c4b538b1f563f1b02be2f3a32b2cfc4f08ded0be10a6b8fa994d9719594a40eb

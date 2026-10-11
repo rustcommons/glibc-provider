@@ -1,0 +1,6 @@
+# The collector is MIT licensed and never published; see CLAUDE.md. The data
+# crates (glibc-provider-sources, then glibc-provider-binaries) are added when
+# their format is settled.
+[workspace]
+members = ["collector"]
+resolver = "2"

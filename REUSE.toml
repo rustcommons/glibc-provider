@@ -1,0 +1,22 @@
+version = 1
+
+# Blobs are stored by content, so their path cannot carry the license: each
+# file's own SPDX tag or notice wins ("closest"), and glibc's license applies
+# otherwise. Kernel UAPI headers carry their SPDX tags or the kernel's COPYING.
+[[annotations]]
+path = ["data/**"]
+precedence = "closest"
+SPDX-FileCopyrightText = "Free Software Foundation, Inc. and the GNU C Library contributors; the Linux kernel contributors (UAPI headers)"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
+path = ["README.md", "NOTICE.md"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "rustcommons contributors"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
+path = ["collector/**", ".github/**", "CLAUDE.md", "AGENTS.md", "docs/**", ".gitattributes", ".gitignore", "Cargo.toml", "Cargo.lock", "REUSE.toml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "rustcommons contributors"
+SPDX-License-Identifier = "MIT"

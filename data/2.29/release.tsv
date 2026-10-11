@@ -1,0 +1,9 @@
+key	value
+release	2.29
+archive	glibc-2.29.tar.xz
+archive_sha256	f3eeb8d57e25ca9fc13c2af3dae97754f9f643bc69229546828e3a240e2af04b
+collector	0.1.0
+target.crt1.o	d0bd35c2fa2470bc05e166c9e1372cc9a48c69a864484b6df4dfabb84e66f886
+target.crti.o	abff80923c33f963a19b780e6e44e72b6a57223197565dcfef368187c5e6456c
+target.crtn.o	22e931535540ed4f21b5c89781f9e6e6addfe1ddeff316c9f7b849e6d3926e6d
+target.libc_nonshared.a	284a961a42825ea38c9a722767994c427b46ca4c70f51673d3ea53fa511a466a

@@ -1,0 +1,9 @@
+key	value
+release	2.40
+archive	glibc-2.40.tar.xz
+archive_sha256	19a890175e9263d748f627993de6f4b1af9cd21e03f080e4bfb3a1fac10205a2
+collector	0.1.0
+target.crt1.o	c730fad692179b68914d855e744c29fda39e7a1e83adcb4a9358e6bd25aae188
+target.crti.o	7b32159fc0cfa653f19dd086bf32aca966fbf28bd59994229e17083f6dffd0bd
+target.crtn.o	879f2b406bd19952192fc7b0239fec910370f34ee7d1bef68314caa9207494e1
+target.libc_nonshared.a	d3133f25ee8722b6cfea320160c086eca8e712ec9e54c85e2ca76660251de098

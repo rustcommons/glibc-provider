@@ -1,0 +1,44 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  rust:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo test --workspace --locked --offline
+      - run: cargo clippy --workspace --all-targets --locked --offline -- -D warnings
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.90.0
+      - run: cargo test --workspace --locked --offline
+  data:
+    name: Every blob matches its name and every table entry has a blob
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -euo pipefail
+          bad=0
+          while read -r f; do
+            [ "$(sha256sum "$f" | cut -d' ' -f1)" = "$(basename "$f")" ] || { echo "bad blob $f"; bad=1; }
+          done < <(find data/blobs -type f)
+          for t in data/2.*/files.tsv data/2.*/headers.tsv; do
+            col=3; case "$t" in *headers.tsv) col=2 ;; esac
+            tail -n +2 "$t" | cut -f$col | grep -v '^$' | while read -r h; do
+              [ -f "data/blobs/${h:0:2}/$h" ] || { echo "missing blob $h ($t)"; exit 1; }
+            done
+          done
+          exit $bad

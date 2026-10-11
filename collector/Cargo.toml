@@ -1,0 +1,15 @@
+[package]
+name = "glibc-provider-collector"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+description = "Records the glibc source inputs of provider startup objects and nonshared archives"
+repository = "https://github.com/rustcommons/glibc-provider"
+license = "MIT"
+publish = false
+
+[[bin]]
+name = "glibc-provider-collect"
+path = "src/main.rs"
+
+[dependencies]
