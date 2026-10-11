@@ -3,6 +3,11 @@ release	2.42
 archive	glibc-2.42.tar.xz
 archive_sha256	d1775e32e4628e64ef930f435b67bb63af7599acb6be2b335b9f19f16509f17f
 collector	0.1.0
+builder.gcc	12.2
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	89ec8d4d29f21b08ac788b985c2c40aa37166efc52d928f61c9e6722f0fd66a7
 target.crti.o	977ad8d2cfd80ccddc4586a4dbe444f4c538b7f88c9bdd250af56fa7b47cfea0
 target.crtn.o	2e9d70a8579812bb855da3cd093734307f9b07aed41e52a7f4dbd1e7a00445ae

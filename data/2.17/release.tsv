@@ -3,6 +3,11 @@ release	2.17
 archive	glibc-2.17.tar.xz
 archive_sha256	6914e337401e0e0ade23694e1b2c52a5f09e4eda3270c67e7c3ba93a89b5b23e
 collector	0.1.0
+builder.gcc	4.8
+builder.pie	no
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	4b9476ae2a4b9cd056437528139c884b3db470649a8d67593dcfee10f6ac175c
 target.crti.o	096d31d8374349ccbf361c5f10d3af4703cca6621a5cf5f3137b2c4f5cf0bf26
 target.crtn.o	9c3077cd95a3d715fd2a5cb843dcaf6a20f29a38c86ec7e870c713ce1dc82e71

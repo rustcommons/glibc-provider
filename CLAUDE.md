@@ -16,7 +16,8 @@ The design is in linux-abi-tools'
 | Path | What | License |
 | --- | --- | --- |
 | `data/` | glibc source files and generated headers, unmodified, stored by content; per-release manifests and compile commands | LGPL-2.1-or-later (glibc); kernel UAPI headers GPL-2.0 WITH Linux-syscall-note |
-| `collector/` | The tool that records `data/` from a qualified linux-abi-tools build tree | MIT (not published) |
+| `collector/` | `glibc-provider-collect` records `data/` from a qualified linux-abi-tools build tree; `glibc-provider-replay` rebuilds and compares the objects with a local compiler ([docs/REPLAY.md](docs/REPLAY.md)) | MIT (not published) |
+| `qualification/` | Reviewed differences accepted by the replay comparison, each with its reason | MIT |
 
 Its consumer is `libc-abi-tools` (rustcommons/linux-abi-tools) and, through it,
 `cargo-libc`. The published crates are `glibc-provider-sources` (planned) and,
@@ -32,9 +33,14 @@ after legal review, `glibc-provider-binaries`.
   unmodified. If a derived form is ever added, label it as modified, with the date,
   as the LGPL requires.
 - Record each file's class: an archive file, a file generated during the build, the
-  builder's kernel UAPI header, or the builder compiler's own header. Each class has
+  builder's kernel UAPI header, the builder compiler's own header, or the builder
+  compiler's predefined macros (`logs/builder-defaults.txt`), which supply defaults
+  such as PIE that recorded commands leave implicit. Each class has
   its own origin and license, and the class decides whether the file ships.
-- Std-only Rust for the collector and the crates. The collector may call `tar`.
+- Std-only Rust for the collector and the crates. The collector may call `tar`; the
+  replay may call the chosen compiler, `ar` and `readelf`.
+- Never add an accepted difference without its exact text and a reason that explains
+  why it cannot matter; any other difference fails the replay.
 - Ask about unresolved product decisions; do not invent compatibility claims.
 
 ## Validation

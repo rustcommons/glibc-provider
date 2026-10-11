@@ -47,6 +47,7 @@ recorded objects are provably the ones in the archive.
 | `generated` | The build tree | Yes | Produced by glibc's configure and make from the archive (for example `config.h`, `libc-modules.h`, `tcb-offsets.h`); glibc's license. |
 | `uapi` | `/usr/include` | Yes | The builder's Linux UAPI headers, as installed in the provider. The kernel's license, generally GPL-2.0 WITH Linux-syscall-note; each file's own SPDX tag applies. |
 | `compiler` | Absolute path in the builder | No (path only) | The builder compiler's own headers (`stddef.h`, `stdarg.h`, `limits.h`, `cpuid.h`, ...). A local build uses its own compiler's equivalents. |
+| `builder` | `builder-defaults.txt` | Yes | The builder compiler's predefined macros (`gcc -dM -E`). `release.tsv` derives `builder.gcc`, `builder.pie`, `builder.stack_protector`, `builder.cet` and `builder.fortify` from them: defaults that recorded commands leave implicit. |
 
 ## Measured totals (2026-10-11)
 

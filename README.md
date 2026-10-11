@@ -15,8 +15,9 @@ source on a user's machine, with no container and no glibc binaries from us. The
 design is in linux-abi-tools'
 [PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md).
 
-**Status:** data collected and verified for all 28 releases. The published crate
-`glibc-provider-sources` is not released yet.
+**Status:** data collected and verified for all 28 releases. Rebuilding with the
+host's GCC reproduces every release's objects ([docs/REPLAY.md](docs/REPLAY.md)); Clang
+cannot for 2.17–2.42. The published crate `glibc-provider-sources` is not released yet.
 
 ## Where the data comes from
 

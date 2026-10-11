@@ -3,6 +3,11 @@ release	2.18
 archive	glibc-2.18.tar.xz
 archive_sha256	2cb4e1e381928f1e5e55e71ab1ba8e0ea7ede75ff9709770435bfd018ea257a3
 collector	0.1.0
+builder.gcc	4.8
+builder.pie	no
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	836ace35a3e7282f56f6822e148181d0cb158cca25d31bde2f8bff8f1cde04d8
 target.crti.o	a4bc4bbc4e5483d1c1641d6e6672300c0ec3a9f9855d59a2917262395e03b771
 target.crtn.o	bea386422871e132d817078140989408f00e62274f017f6608e1de8d06661c3d

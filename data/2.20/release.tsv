@@ -3,6 +3,11 @@ release	2.20
 archive	glibc-2.20.tar.xz
 archive_sha256	f84b6d42aecc288d593c397b0a3d02260a33ee686bce0c634eb9b32798f36ba5
 collector	0.1.0
+builder.gcc	4.8
+builder.pie	no
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	5c1b259a7da86ba55f758f8a8adb21cb34968d5bfaeeba0b6486194a543e489a
 target.crti.o	3b312b1b40993a27686a711b86993914a1e2a2c510c3671008eeb92283e8d23b
 target.crtn.o	f2770b83540ac5149b888cce29031e431dda672281e24634ba2c52561cc3233f

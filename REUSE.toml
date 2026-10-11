@@ -16,7 +16,7 @@ SPDX-FileCopyrightText = "rustcommons contributors"
 SPDX-License-Identifier = "LGPL-2.1-or-later"
 
 [[annotations]]
-path = ["collector/**", ".github/**", "CLAUDE.md", "AGENTS.md", "docs/**", ".gitattributes", ".gitignore", "Cargo.toml", "Cargo.lock", "REUSE.toml"]
+path = ["collector/**", "qualification/**", ".github/**", "CLAUDE.md", "AGENTS.md", "docs/**", ".gitattributes", ".gitignore", "Cargo.toml", "Cargo.lock", "REUSE.toml"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "rustcommons contributors"
 SPDX-License-Identifier = "MIT"

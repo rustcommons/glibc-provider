@@ -3,6 +3,11 @@ release	2.30
 archive	glibc-2.30.tar.xz
 archive_sha256	e2c4114e569afbe7edbc29131a43be833850ab9a459d81beb2588016d2bbb8af
 collector	0.1.0
+builder.gcc	6.3
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	aaae9b22858e348e2469b2b42013b2f268db7d120cc5a57874248c5d0caa7e74
 target.crti.o	f1b27aeb3c2358ff6dfb7e9b79231e470e3b1690f04b0609b43e98442b4df5de
 target.crtn.o	4b28c7e67c4840145ea5d4cf49f7209f12e8f2a434d84e4a7947cf08cd5611b0

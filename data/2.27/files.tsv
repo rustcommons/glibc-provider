@@ -237,6 +237,7 @@ archive	time/sys/time.h	6b74846a3b0c0aab6b7f5261813efa3c83c5fa5cc96a9e59f4f3c323
 archive	time/time.h	be50f67718f9bd84734da3c3f63d42a4c6f5618197fd79d3d7e908fd9edc7f2c	10363
 archive	wcsmbs/bits/types/__mbstate_t.h	c561df72d5b987ccbd022059fdb1bcb6899c3e94b403997a0576ef3e1afb0f94	564
 archive	wcsmbs/bits/types/wint_t.h	7321a39e4baa04e5d730bfe4e52d00ce82f2ae62dbd8292a4a6a3073b6ae3593	796
+builder	builder-defaults.txt	b5c3392f4468049039af00c088d188525587d317a2d5c671001de788c593fa31	8630
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/limits.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stdarg.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stdbool.h		

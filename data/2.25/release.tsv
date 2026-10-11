@@ -3,6 +3,11 @@ release	2.25
 archive	glibc-2.25.tar.xz
 archive_sha256	067bd9bb3390e79aa45911537d13c3721f1d9d3769931a30c2681bfee66f23a0
 collector	0.1.0
+builder.gcc	4.8
+builder.pie	no
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	c5a1265cf17ef6ef67efc363bebce5830f4eb6d4acbf67f3cef800f4dbcd777f
 target.crti.o	3a97771d344f9b6711dcae2f8801e57e85b26d0800f0f0993178905cf4f2e5d9
 target.crtn.o	6b4d42fc23eef95a7420e68dcf744a84ba54d02c82e14b4042a996c8aeb9b690

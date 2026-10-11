@@ -156,6 +156,7 @@ archive	sysdeps/x86_64/sysdep.h	019c2c888b07cf72aeaf1db807a622e05dc76b457783f7a7
 archive	time/sys/time.h	387fb418b82d8b73c869b1f67fe49f6a063359dc2a428fbc3f5b4afb716639fc	6697
 archive	time/time.h	f73580fb5e46d61ae1bc16f29b0bcfa099758563fa9b159d9b1e9597b1da5f4a	13724
 archive	wcsmbs/wchar.h	ec6e8ce9de938550019e15eb7e5d38383adb3c69bd0849b6a9f653b18b84c74f	32119
+builder	builder-defaults.txt	db42da4a47abe874a43098b88e6f380e18dd8dc7d59d39cfb9ccd3e7d5c9e90f	8240
 compiler	/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/limits.h		
 compiler	/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stdbool.h		
 compiler	/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h		

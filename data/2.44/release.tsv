@@ -3,6 +3,11 @@ release	2.44
 archive	glibc-2.44.tar.xz
 archive_sha256	37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667
 collector	0.1.0
+builder.gcc	12.2
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	d8288bd608032aac4a4fe5202a5a957d5d344806833eb0785655f7750c72e597
 target.crti.o	21ce63cbd9d175fd1f9f8d5c436f34431e868a04ae33547f14c436ccf4a496ce
 target.crtn.o	6d1c83776b4418dd02a6137f9f0d18092f8565b38820d4b8cda6cff319111aff

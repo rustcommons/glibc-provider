@@ -3,6 +3,11 @@ release	2.43
 archive	glibc-2.43.tar.xz
 archive_sha256	d9c86c6b5dbddb43a3e08270c5844fc5177d19442cf5b8df4be7c07cd5fa3831
 collector	0.1.0
+builder.gcc	12.2
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	278c46636453458124e6d5c241572a6e136c991ed9072cb9f4de0a82956997b6
 target.crti.o	cece7b48e5ffa5b81ffccc13ec1e8235d2767819f1afaf68b69646cf6f38cb1c
 target.crtn.o	fc6a6bdef71ff9c8d3e22fa41e1a6fbe61d73244411f8d5ea6e8505c1313bbc7

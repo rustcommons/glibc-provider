@@ -230,6 +230,7 @@ archive	time/bits/types/time_t.h	08a01b91752dc9dda93eb0f8c571e2c57fbb67b9768f5c2
 archive	time/bits/types/timer_t.h	d96a2452da0d933941273d11d1048ea525f033306892835b0a7a0999b13853aa	159
 archive	time/sys/time.h	5aabdc11f104a061555965bc4d30d9cada6afe4f611da5fd92358105dcdd993c	6656
 archive	time/time.h	429baeb41b6d6efbbac586b2b92054a463c27b9ad71b618f83f9c691f9feac39	10360
+builder	builder-defaults.txt	b5c3392f4468049039af00c088d188525587d317a2d5c671001de788c593fa31	8630
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/limits.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stdbool.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stddef.h		

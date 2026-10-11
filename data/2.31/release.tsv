@@ -3,6 +3,11 @@ release	2.31
 archive	glibc-2.31.tar.xz
 archive_sha256	9246fe44f68feeec8c666bb87973d590ce0137cca145df014c72ec95be9ffd17
 collector	0.1.0
+builder.gcc	6.3
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	5fc3c07d0baa467aa5646e5143b76e481d60a7b21e8510efdb7acdbf3feecab9
 target.crti.o	9594c7b24188645fb36e77fc9c5a4c4ccdb814cd827a046228c3e73f8e1f660e
 target.crtn.o	0c255ef416482a7703351d733184859ba06fda7e23719ff7131f5ab22718218a

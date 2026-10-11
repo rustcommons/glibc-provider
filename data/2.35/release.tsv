@@ -3,6 +3,11 @@ release	2.35
 archive	glibc-2.35.tar.xz
 archive_sha256	5123732f6b67ccd319305efd399971d58592122bcc2a6518a1bd2510dd0cf52e
 collector	0.1.0
+builder.gcc	6.3
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	16cff55bcbe7dbeca09e53ac64e6997c38733c897ea0ee2b18231faa7f6d0178
 target.crti.o	e0cf8bca9d353f32f316790487ecb897289e2ceddd1e63f6faecad96b2035464
 target.crtn.o	7a89f6df464dd3a9bcf3d9321a1bdb733bac0abc4663cfbe8c238e5c48825473

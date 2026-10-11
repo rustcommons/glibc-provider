@@ -3,6 +3,11 @@ release	2.26
 archive	glibc-2.26.tar.xz
 archive_sha256	e54e0a934cd2bc94429be79da5e9385898d2306b9eaf3c92d5a77af96190f6bd
 collector	0.1.0
+builder.gcc	6.3
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	f4bf7a64b91afe866c8fb1312e1a41da87fb39e50c05b06c10314dcb69223052
 target.crti.o	c63d32e3c2d205fb9c583902384a1012771c3443e2a55c44fed97e61a66e090a
 target.crtn.o	ed0d2ab0e1089f406549d30eef3d73a7417dd1ed0427cfe209bde3054353907f

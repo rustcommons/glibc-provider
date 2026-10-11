@@ -269,6 +269,7 @@ archive	time/bits/types/timer_t.h	d96a2452da0d933941273d11d1048ea525f03330689283
 archive	time/mktime-internal.h	f04a28b3974b3e8caf78c4fd10208c9e8d482688d78734d77533ba74dcfd050f	3121
 archive	time/sys/time.h	bb1997a3edb73df379b6f9881470cf614f42fc5d8b15dd7e836444b158c897b5	6754
 archive	time/time.h	e88cfe6848c864eec16061f3a23a2c37aaa39ef1cf4e271e81b00b9df94ce05d	10276
+builder	builder-defaults.txt	b5c3392f4468049039af00c088d188525587d317a2d5c671001de788c593fa31	8630
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/limits.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stdbool.h		
 compiler	/usr/lib/gcc/x86_64-linux-gnu/6/include/stddef.h		

@@ -3,6 +3,11 @@ release	2.38
 archive	glibc-2.38.tar.xz
 archive_sha256	fb82998998b2b29965467bc1b69d152e9c307d2cf301c9eafb4555b770ef3fd2
 collector	0.1.0
+builder.gcc	12.2
+builder.pie	yes
+builder.stack_protector	no
+builder.cet	no
+builder.fortify	no
 target.crt1.o	508347ef125c59b1171f72de0bd41608438fbb3f3be4a93d4275aa010562e257
 target.crti.o	8cc613b53683f01f11433dba36642fc0cba59d21bb4297670836935cd3e981d7
 target.crtn.o	67c6f1006bae69b14f8985178cc1d0d69eb8edb4c38089f481663a9ddd4ba614

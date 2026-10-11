@@ -44,6 +44,8 @@ enum Class {
     Uapi,
     /// The builder compiler's own header; absolute path, not stored.
     Compiler,
+    /// The builder compiler's predefined macros (`logs/builder-defaults.txt`).
+    Builder,
 }
 
 impl Class {
@@ -53,8 +55,42 @@ impl Class {
             Class::Generated => "generated",
             Class::Uapi => "uapi",
             Class::Compiler => "compiler",
+            Class::Builder => "builder",
         }
     }
+}
+
+/// Code-generation defaults that the recorded commands leave implicit, from
+/// the builder compiler's predefined macros (`gcc -dM -E`).
+fn builder_defaults(macros: &str) -> Result<Vec<[String; 2]>, String> {
+    let value = |name: &str| -> Option<&str> {
+        macros.lines().find_map(|line| {
+            let mut fields = line.split_whitespace();
+            (fields.next() == Some("#define") && fields.next() == Some(name))
+                .then(|| fields.next().unwrap_or(""))
+        })
+    };
+    let (Some(major), Some(minor)) = (value("__GNUC__"), value("__GNUC_MINOR__")) else {
+        return fail("builder defaults do not come from GCC");
+    };
+    let flag = |present: bool| if present { "yes" } else { "no" }.to_string();
+    Ok(vec![
+        ["builder.gcc".into(), format!("{major}.{minor}")],
+        ["builder.pie".into(), flag(value("__PIE__").is_some())],
+        [
+            "builder.stack_protector".into(),
+            flag(
+                value("__SSP__").is_some()
+                    || value("__SSP_STRONG__").is_some()
+                    || value("__SSP_ALL__").is_some(),
+            ),
+        ],
+        ["builder.cet".into(), flag(value("__CET__").is_some())],
+        [
+            "builder.fortify".into(),
+            flag(value("_FORTIFY_SOURCE").is_some()),
+        ],
+    ])
 }
 
 fn fail<T>(message: impl Into<String>) -> Result<T, String> {
@@ -364,6 +400,7 @@ impl Collector<'_> {
                     let bytes = read(&self.work.join("source/usr/include").join(&path))?;
                     self.store(&class, &path, bytes)
                 }
+                Class::Builder => return fail("unexpected builder input"),
                 Class::Compiler => {
                     self.record.files.insert([
                         class.name().into(),
@@ -553,6 +590,10 @@ fn collect(work: &Path, release: &str, archive_sha256: &str) -> Result<Record, S
         ["archive_sha256".into(), archive_sha256.into()],
         ["collector".into(), VERSION.into()],
     ];
+    let defaults = read(&work.join("logs/builder-defaults.txt"))?;
+    let derived = builder_defaults(&String::from_utf8_lossy(&defaults))?;
+    collector.record.release.extend(derived);
+    collector.store(&Class::Builder, "builder-defaults.txt", defaults);
     let result = (|| {
         let build = collector.build.clone();
         for name in ["crt1.o", "crti.o", "crtn.o"] {
@@ -699,6 +740,28 @@ mod tests {
                 "/work/glibc-2.37/include/stdc-predef.h"
             ]
         );
+    }
+
+    #[test]
+    fn derives_builder_defaults_from_predefined_macros() {
+        let debian =
+            "#define __GNUC__ 6\n#define __GNUC_MINOR__ 3\n#define __PIE__ 2\n#define __pie__ 2\n";
+        assert_eq!(
+            builder_defaults(debian).unwrap(),
+            [
+                ["builder.gcc".to_string(), "6.3".into()],
+                ["builder.pie".into(), "yes".into()],
+                ["builder.stack_protector".into(), "no".into()],
+                ["builder.cet".into(), "no".into()],
+                ["builder.fortify".into(), "no".into()],
+            ]
+        );
+        let ubuntu = "#define __GNUC__ 13\n#define __GNUC_MINOR__ 3\n#define __SSP_STRONG__ 3\n#define __CET__ 3\n";
+        let derived = builder_defaults(ubuntu).unwrap();
+        assert_eq!(derived[1][1], "no");
+        assert_eq!(derived[2][1], "yes");
+        assert_eq!(derived[3][1], "yes");
+        assert!(builder_defaults("#define __clang__ 1\n").is_err());
     }
 
     #[test]
