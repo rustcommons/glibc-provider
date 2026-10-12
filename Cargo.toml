@@ -15,6 +15,7 @@ categories = ["development-tools::build-utils"]
 include = [
     "src/**",
     "pack/sources.gz",
+    "qualification/accepted-differences.tsv",
     "Cargo.toml",
     "README.md",
     "NOTICE.md",

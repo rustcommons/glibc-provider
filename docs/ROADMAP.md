@@ -7,7 +7,11 @@ linux-abi-tools' [ROADMAP.md](https://github.com/rustcommons/linux-abi-tools/blo
 
 - [x] Build `glibc-provider-sources` (2026-10-12): all 28 releases in one 3.7 MB pack,
   std-only decoding, checked by `glibc-provider-pack --check` and used by the replay.
-- [ ] Publish it to crates.io (needs the user's go-ahead).
+- [x] Add each release's library definitions (`libraries.tsv`), so `source` mode
+  generates link stubs without glibc binaries, and the reviewed differences
+  (`ACCEPTED_DIFFERENCES`) (2026-10-12). The pack is now 4.7 MB.
+- [ ] Publish it to crates.io together with the other crates at the release step
+  (user decision 2026-10-12).
 - [ ] `glibc-provider-binaries` (the `prebuilt` mode's CI-built objects), after the
   legal review: storing glibc binaries in this public repository already distributes
   them, so neither the crate's data nor its objects are added before that review.

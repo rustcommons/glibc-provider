@@ -12,7 +12,10 @@
 //! - the exact compile commands, and the builder compiler's defaults those commands
 //!   leave implicit;
 //! - the interface of every object the pinned container build produced, which a
-//!   local rebuild must reproduce;
+//!   local rebuild must reproduce, and the reviewed differences it may show
+//!   ([`ACCEPTED_DIFFERENCES`]);
+//! - the public definitions of the release's eight shared libraries, from which
+//!   link stubs are generated without the libraries themselves;
 //! - the release's installed headers.
 //!
 //! With it, linux-abi-tools builds a provider on the user's machine with the host's
@@ -20,8 +23,8 @@
 //! [glibc-provider](https://github.com/rustcommons/glibc-provider) collector from
 //! qualified container builds.
 //!
-//! The data is compiled in as one gzip-compressed pack (3.7 MB). [`Sources::bundled`]
-//! decompresses it (66 MiB) and checks every file's SHA-256.
+//! The data is compiled in as one gzip-compressed pack (4.7 MB). [`Sources::bundled`]
+//! decompresses it (72 MiB) and checks every file's SHA-256.
 //!
 //! ```
 //! let sources = glibc_provider_sources::Sources::bundled().unwrap();
@@ -64,14 +67,19 @@ pub const RELEASES: &[&str] = &[
     "2.41", "2.42", "2.43", "2.44",
 ];
 /// The tables each release has.
-pub const TABLES: [&str; 6] = [
+pub const TABLES: [&str; 7] = [
     "release.tsv",
     "objects.tsv",
     "inputs.tsv",
     "files.tsv",
     "headers.tsv",
     "interfaces.tsv",
+    "libraries.tsv",
 ];
+/// Differences from `interfaces.tsv` a local rebuild may show, each reviewed:
+/// columns `release`, `object`, `compiler` (`gcc`, `clang` or `any`), the exact
+/// `difference` as the comparison reports it, and the `reason` it cannot matter.
+pub const ACCEPTED_DIFFERENCES: &str = include_str!("../qualification/accepted-differences.tsv");
 /// Largest decompressed pack accepted.
 const MAX_PACK: usize = 512 << 20;
 
@@ -530,6 +538,7 @@ mod tests {
             ("files.tsv", format!("class\tpath\tsha256\tsize\narchive\tcsu/x.h\t{digest}\t12\ncompiler\t/usr/x.h\t\t\n")),
             ("headers.tsv", format!("path\tsha256\tsize\nx.h\t{digest}\t12\n")),
             ("interfaces.tsv", "object\tkind\tvalue\n".to_string()),
+            ("libraries.tsv", "soname\tsymbol\n".to_string()),
         ];
         let mut entries: Vec<(String, Vec<u8>, Option<String>)> = tables
             .iter()

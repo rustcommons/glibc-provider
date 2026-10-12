@@ -40,8 +40,12 @@ The builder compilers' own headers are recorded by path only and are not stored.
 
 ## The tables and the crate
 
-The tables in `data/X.Y/` and the crate code in `src/` (when added) are distributed
-under LGPL-2.1-or-later, the license of the data they describe.
+The tables in `data/X.Y/` and the crate code in `src/` are distributed under
+LGPL-2.1-or-later, the license of the data they describe. `interfaces.tsv` and
+`libraries.tsv` describe glibc objects and libraries built from the pinned archive
+(symbol names, versions, types, sizes, sections and addresses, and digests); they
+contain no code or data from them. The crate also includes
+`qualification/accepted-differences.tsv` (MIT, below) as `ACCEPTED_DIFFERENCES`.
 
 ## The crate
 

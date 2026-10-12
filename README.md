@@ -10,7 +10,8 @@ needs real pieces of that glibc release: its startup objects (`crt1.o`, `crti.o`
 
 This repository records, for each release, the exact source files those pieces
 were built from, the headers glibc's build generated for them, the compile
-commands, and the installed headers. With them, a provider can be built from
+commands, the installed headers, and the public definitions of its shared
+libraries (for the link stubs). With them, a provider can be built from
 source on a user's machine, with no container and no glibc binaries from us. The
 design is in linux-abi-tools'
 [PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md).
@@ -24,8 +25,8 @@ built and qualified (below) and is not yet published to crates.io.
 
 ## The crate
 
-`glibc-provider-sources` compiles all of `data/` in as one pack of 3.7 MB, which
-decompresses to about 66 MiB:
+`glibc-provider-sources` compiles all of `data/` in as one pack of 4.7 MB, which
+decompresses to about 72 MiB:
 
 ```rust
 let sources = glibc_provider_sources::Sources::bundled()?; // checks every SHA-256

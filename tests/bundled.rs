@@ -1,4 +1,4 @@
-use glibc_provider_sources::{Sources, RELEASES};
+use glibc_provider_sources::{Sources, ACCEPTED_DIFFERENCES, RELEASES};
 use std::fs;
 
 #[test]
@@ -43,6 +43,40 @@ fn bundled_pack_holds_every_release_with_its_inputs() {
             .filter(|l| l.contains("\tbytes\t"))
             .count();
         assert_eq!(digests, distinct.len(), "{name}");
+        // Every library's public definitions, under the metadata header.
+        let libraries = release.table("libraries.tsv").unwrap();
+        assert!(libraries.starts_with("soname\tsymbol\tversion\tdefault\t"));
+        for soname in [
+            "libc.so.6",
+            "libm.so.6",
+            "ld-linux-x86-64.so.2",
+            "libresolv.so.2",
+            "libpthread.so.0",
+            "libdl.so.2",
+            "librt.so.1",
+            "libutil.so.1",
+        ] {
+            assert!(
+                libraries.contains(&format!("\n{soname}\t")),
+                "{name} {soname}"
+            );
+        }
+    }
+}
+
+#[test]
+fn accepted_differences_name_recorded_objects() {
+    let sources = Sources::bundled().unwrap();
+    let mut lines = ACCEPTED_DIFFERENCES.lines();
+    assert_eq!(
+        lines.next(),
+        Some("release\tobject\tcompiler\tdifference\treason")
+    );
+    for line in lines {
+        let fields: Vec<&str> = line.split('\t').collect();
+        assert_eq!(fields.len(), 5, "{line}");
+        let objects = sources.release(fields[0]).unwrap().objects().unwrap();
+        assert!(objects.iter().any(|o| o.object == fields[1]), "{line}");
     }
 }
 

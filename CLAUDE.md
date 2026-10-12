@@ -49,7 +49,8 @@ after legal review, `glibc-provider-binaries`.
 Run `cargo fmt --all -- --check`, `cargo test --workspace --locked --offline`, and
 `cargo clippy --workspace --all-targets --locked --offline -- -D warnings`. Data
 changes also require the collector's `--check` against the build trees, and
-`glibc-provider-replay --record` to re-record `interfaces.tsv`; the Replay workflow
+`glibc-provider-replay --record` to re-record `interfaces.tsv`, and linux-abi-tools'
+`libc-abi glibc libraries` to re-record `libraries.tsv`; the Replay workflow
 then qualifies each GCC version against it. Then regenerate the pack with
 `glibc-provider-pack` (Linux, needs `gzip`); CI runs `glibc-provider-pack --check`. Packaging
 changes require `cargo package --locked`. Never publish to crates.io without the

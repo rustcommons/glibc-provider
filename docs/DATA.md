@@ -16,6 +16,7 @@ build tree of linux-abi-tools' provider pipeline; nothing is edited by hand.
 | `data/X.Y/files.tsv` | The distinct inputs of the release, with class, SHA-256 and size |
 | `data/X.Y/headers.tsv` | The installed headers (`usr/include`) of the release |
 | `data/X.Y/interfaces.tsv` | The interface of each container-built object, the reference a replay is compared with ([REPLAY.md](REPLAY.md)) |
+| `data/X.Y/libraries.tsv` | The public definitions of the release's eight container-built shared libraries, from which link stubs are generated ([below](#librariestsv)) |
 
 All tables are tab-separated with a header row, sorted, and written byte for byte
 reproducibly (`--check` regenerates and compares).
@@ -66,6 +67,25 @@ Recorded from the container build tree by `glibc-provider-replay --release X.Y
 
 It describes the objects; it contains no code or data from them.
 
+## `libraries.tsv`
+
+Recorded from the container build's installed libraries by linux-abi-tools'
+`libc-abi glibc libraries --release X.Y --input WORK/source/lib64` (first recorded
+2026-10-12). For each of `libc.so.6`, `libm.so.6`, `ld-linux-x86-64.so.2`,
+`libresolv.so.2`, `libpthread.so.0`, `libdl.so.2`, `librt.so.1` and `libutil.so.1`,
+one row per public definition (a `GLIBC_` version, default or protected
+visibility) whose name is in the release's ABI lists: SONAME, name, version,
+whether it is the default version, type, binding, visibility, section index and
+alignment, address, size, and a group number shared by definitions at the same
+address. The command first checks every library against glibc's ABI lists
+(membership, kind and size).
+
+linux-abi-tools generates a provider's link stubs from exactly these facts, so
+`source` mode needs no glibc binary. Its provider workflow regenerates the table
+from every fresh container build and requires the recorded one. Like
+`interfaces.tsv`, it describes the libraries and contains no code or data from
+them.
+
 ## Measured totals (2026-10-11)
 
 | | Count |
@@ -104,10 +124,10 @@ compiled into the `glibc-provider-sources` crate.
 
 | | Bytes |
 | --- | ---: |
-| Entries (9,802: 168 tables, 9,634 files) | 68,678,042 |
-| Stored, with deltas | 15,943,011 |
-| `pack/sources.gz` | 3,717,984 |
-| Without deltas, for comparison | 8,670,324 |
+| Entries (9,830: 196 tables, 9,634 files) | 75,058,110 |
+| Stored, with deltas | 23,699,277 |
+| `pack/sources.gz` | 4,747,631 |
+| Without deltas, for comparison (measured before `libraries.tsv` was added) | 8,670,324 |
 
 Without deltas gzip cannot reach earlier versions of a file (its window is 32 KiB),
 which would leave only a few releases of room under crates.io's 10 MB limit.
