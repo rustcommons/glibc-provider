@@ -17,9 +17,10 @@ and `--record /tmp/glibc-2.28-work` (re)records `interfaces.tsv` from them.
 
 ## How a command is replayed
 
-1. **Recreate the inputs.** The recorded archive files, generated headers and
-   kernel UAPI headers are recreated from `data/blobs/`, each checked against its
-   SHA-256.
+1. **Recreate the inputs** from the `glibc-provider-sources` crate, as a local
+   provider build does: `Release::write_sources` writes the recorded archive files,
+   generated headers and kernel UAPI headers, after the crate has checked every
+   SHA-256. Regenerate the pack (`glibc-provider-pack`) after changing `data/`.
 2. **Run each recorded command:**
    - `gcc` is replaced by the chosen compiler, run from the recorded source
      subdirectory, with dependency-file options dropped.

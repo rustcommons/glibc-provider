@@ -43,6 +43,18 @@ The builder compilers' own headers are recorded by path only and are not stored.
 The tables in `data/X.Y/` and the crate code in `src/` (when added) are distributed
 under LGPL-2.1-or-later, the license of the data they describe.
 
+## The crate
+
+The `glibc-provider-sources` crate (`src/`) is licensed under LGPL-2.1-or-later. Its
+`pack/sources.gz` holds all of `data/` unmodified (stored as line deltas between
+versions and gzip-compressed, which the crate reverses exactly, checking every
+SHA-256), so each file keeps its license above. The crate's SPDX expression names
+them all: `LGPL-2.1-or-later AND GPL-2.0-only WITH Linux-syscall-note AND
+GPL-2.0-or-later WITH Linux-syscall-note AND LGPL-2.1-only WITH Linux-syscall-note AND
+LGPL-2.1-or-later WITH Linux-syscall-note AND BSD-3-Clause AND MIT`. Where a kernel
+header is dual-licensed, the expression names its GPL choice. The crate's `sha256.rs`
+is the collector's, below, relicensed by its authors.
+
 ## The collector
 
 `collector/` is MIT licensed ([LICENSES/MIT.txt](LICENSES/MIT.txt)) and is not part

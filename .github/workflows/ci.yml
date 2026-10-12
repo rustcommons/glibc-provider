@@ -18,6 +18,9 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo test --workspace --locked --offline
       - run: cargo clippy --workspace --all-targets --locked --offline -- -D warnings
+      - run: cargo doc --no-deps --locked --offline -p glibc-provider-sources
+        env:
+          RUSTDOCFLAGS: -D warnings
   msrv:
     runs-on: ubuntu-latest
     steps:
@@ -42,3 +45,18 @@ jobs:
             done
           done
           exit $bad
+  pack:
+    name: The crate's pack holds exactly data/, and the crate packages under the size limit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.99.0
+      - run: cargo run --release --locked --offline -p glibc-provider-collector --bin glibc-provider-pack -- --check
+      - name: Package and verify glibc-provider-sources
+        run: |
+          set -euo pipefail
+          cargo package -p glibc-provider-sources --locked
+          size=$(stat -c %s target/package/glibc-provider-sources-*.crate)
+          echo "crate size: $size bytes"
+          # crates.io accepts at most 10 MB; keep room for future releases.
+          [ "$size" -le 9000000 ]

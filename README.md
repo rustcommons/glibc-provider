@@ -19,7 +19,28 @@ design is in linux-abi-tools'
 host's GCC reproduces every release's objects ([docs/REPLAY.md](docs/REPLAY.md)); Clang
 cannot for 2.17–2.42, because it ignores attributes glibc's sources apply after a
 definition and would turn hidden symbols into exported ones. A local build therefore
-uses the host's GCC, as glibc itself requires. The published crate `glibc-provider-sources` is not released yet.
+uses the host's GCC, as glibc itself requires. The crate `glibc-provider-sources` is
+built and qualified (below) and is not yet published to crates.io.
+
+## The crate
+
+`glibc-provider-sources` compiles all of `data/` in as one pack of 3.7 MB, which
+decompresses to about 66 MiB:
+
+```rust
+let sources = glibc_provider_sources::Sources::bundled()?; // checks every SHA-256
+let release = sources.release("2.28")?;
+release.write_sources("/tmp/glibc-2.28-inputs".as_ref())?; // src/, build/, uapi/
+release.write_headers("/tmp/glibc-2.28-include".as_ref())?; // a usr/include
+for object in release.objects()? {
+    println!("{} in {}: {}", object.object, object.directory, object.command);
+}
+```
+
+It has no dependencies; the gzip decoder and SHA-256 are its own, std-only. The pack
+format, and how it stays small, are in [docs/DATA.md](docs/DATA.md#the-crates-pack).
+`glibc-provider-replay` builds every release from the crate, and CI checks that the
+pack equals `data/` exactly.
 
 ## Where the data comes from
 

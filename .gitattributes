@@ -1,2 +1,4 @@
 * text=auto eol=lf
 data/blobs/** -text
+pack/** -text
+src/*.gz -text

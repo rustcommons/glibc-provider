@@ -10,6 +10,18 @@ SPDX-FileCopyrightText = "Free Software Foundation, Inc. and the GNU C Library c
 SPDX-License-Identifier = "LGPL-2.1-or-later"
 
 [[annotations]]
+path = ["src/**", "tests/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "rustcommons contributors"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
+path = ["pack/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Free Software Foundation, Inc. and the GNU C Library contributors; the Linux kernel contributors (UAPI headers)"
+SPDX-License-Identifier = "LGPL-2.1-or-later AND GPL-2.0-only WITH Linux-syscall-note AND GPL-2.0-or-later WITH Linux-syscall-note AND LGPL-2.1-only WITH Linux-syscall-note AND LGPL-2.1-or-later WITH Linux-syscall-note AND BSD-3-Clause AND MIT"
+
+[[annotations]]
 path = ["README.md", "NOTICE.md"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "rustcommons contributors"

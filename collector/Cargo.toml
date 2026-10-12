@@ -16,4 +16,9 @@ path = "src/main.rs"
 name = "glibc-provider-replay"
 path = "src/replay.rs"
 
+[[bin]]
+name = "glibc-provider-pack"
+path = "src/pack.rs"
+
 [dependencies]
+glibc-provider-sources = { path = ".." }

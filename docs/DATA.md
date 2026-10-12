@@ -79,3 +79,36 @@ It describes the objects; it contains no code or data from them.
 The archive inputs carry glibc's LGPL notice (2,939 distinct files) or no notice of
 their own (313 small headers such as wrapper `bits/` headers), which glibc's
 `COPYING.LIB` covers. No archive input is under another license.
+
+## The crate's pack
+
+`pack/sources.gz` is all of `data/` in one file, written by `glibc-provider-pack` and
+compiled into the `glibc-provider-sources` crate.
+
+- **Contents:** every release's six tables (`2.28/release.tsv` …) and every stored
+  file they name (`blobs/<sha256>`), each once. Compiler headers, recorded by path
+  only, are not stored.
+- **Index:** the first line is `glibc-provider-pack 1`, the second the entry count,
+  then one line per entry: name, SHA-256 and size of the contents, size of what is
+  stored, and the base entry (or `-`). The stored bytes follow in index order.
+- **Deltas:** an entry with a base is stored as a line delta against that earlier
+  entry: `c<N>` copies N base lines, `s<N>` skips N, and `a<N>` inserts the N bytes
+  that follow. A table's base is the same table of the previous release; a file's,
+  the previous version of the same path. A delta is used only where it is smaller
+  (the encoder gives up beyond 3,000 differing lines and stores the file whole).
+- **Compression:** the index and stored bytes are compressed with `gzip -9 -n`.
+- **Checks:** the crate rebuilds every entry and requires its SHA-256 and size; then
+  every file a release's tables name must be present with that hash and size, and
+  every path must be relative with no `..`. `glibc-provider-pack --check` requires the
+  pack to equal `data/` exactly.
+
+| | Bytes |
+| --- | ---: |
+| Entries (9,802: 168 tables, 9,634 files) | 68,678,042 |
+| Stored, with deltas | 15,943,011 |
+| `pack/sources.gz` | 3,717,984 |
+| Without deltas, for comparison | 8,670,324 |
+
+Without deltas gzip cannot reach earlier versions of a file (its window is 32 KiB),
+which would leave only a few releases of room under crates.io's 10 MB limit.
+

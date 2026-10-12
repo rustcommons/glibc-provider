@@ -5,7 +5,8 @@
 //! glibc-provider-replay --release X.Y --compiler PATH --out DIR [--root DIR] [--compare WORK]
 //!
 //! 1. Recreates the recorded archive files, generated headers and kernel UAPI
-//!    headers under DIR from `data/blobs/`, checking every SHA-256.
+//!    headers under DIR/inputs from the glibc-provider-sources crate (its
+//!    compiled-in pack, every SHA-256 checked), as a local provider build does.
 //! 2. Runs every recorded compile command with `gcc` replaced by PATH, from the
 //!    recorded source subdirectory, with `-nostdinc`, the compiler's own
 //!    built-in headers, and the recorded UAPI headers, so no host header is used.
@@ -38,11 +39,15 @@ fn fail<T>(message: impl Into<String>) -> Result<T, String> {
 fn rows(path: &Path) -> Result<Vec<Vec<String>>, String> {
     let text =
         fs::read_to_string(path).map_err(|e| format!("cannot read {}: {e}", path.display()))?;
-    Ok(text
-        .lines()
+    Ok(text_rows(&text))
+}
+
+/// The rows of a table with a header line.
+fn text_rows(text: &str) -> Vec<Vec<String>> {
+    text.lines()
         .skip(1)
         .map(|l| l.split('\t').map(String::from).collect())
-        .collect())
+        .collect()
 }
 
 fn run(program: &str, args: &[String], dir: &Path) -> Result<String, String> {
@@ -305,11 +310,11 @@ fn interface_rows(interface: &Interface, digest: &str) -> Vec<String> {
 }
 
 /// Reads `interfaces.tsv`: object -> (interface, allocated-bytes SHA-256).
-fn read_interfaces(path: &Path) -> Result<BTreeMap<String, (Interface, String)>, String> {
+fn read_interfaces(text: &str) -> Result<BTreeMap<String, (Interface, String)>, String> {
     let mut map: BTreeMap<String, (Interface, String)> = BTreeMap::new();
-    for row in rows(path)? {
+    for row in text_rows(text) {
         let [object, kind, value] = &row[..] else {
-            return fail(format!("{}: malformed row {row:?}", path.display()));
+            return fail(format!("interfaces.tsv: malformed row {row:?}"));
         };
         let (interface, digest) = map.entry(object.clone()).or_default();
         match kind.as_str() {
@@ -319,12 +324,12 @@ fn read_interfaces(path: &Path) -> Result<BTreeMap<String, (Interface, String)>,
             "reference" => {
                 let mut parts = value.splitn(3, ' ').map(String::from);
                 let (Some(s), Some(f), Some(n)) = (parts.next(), parts.next(), parts.next()) else {
-                    return fail(format!("{}: malformed reference {value}", path.display()));
+                    return fail(format!("interfaces.tsv: malformed reference {value}"));
                 };
                 interface.relocations.insert((s, f, n));
             }
             "bytes" => *digest = value.clone(),
-            _ => return fail(format!("{}: unknown kind {kind}", path.display())),
+            _ => return fail(format!("interfaces.tsv: unknown kind {kind}")),
         }
     }
     Ok(map)
@@ -402,8 +407,12 @@ fn replay() -> Result<bool, String> {
     let (Some(compiler), Some(out)) = (compiler, out) else {
         return fail(usage);
     };
+    // Everything recorded comes from the glibc-provider-sources crate, as it does
+    // for a local provider build.
+    let sources = glibc_provider_sources::Sources::bundled()?;
+    let recorded_release = sources.release(&release)?;
     let recorded_interfaces = if compare.is_none() {
-        read_interfaces(&dir.join("interfaces.tsv"))?
+        read_interfaces(recorded_release.table("interfaces.tsv")?)?
     } else {
         BTreeMap::new()
     };
@@ -414,24 +423,13 @@ fn replay() -> Result<bool, String> {
         fs::create_dir_all(&out).map_err(|e| e.to_string())?;
         out.canonicalize().map_err(|e| e.to_string())?
     };
-    let (src, build, include) = (out.join("src"), out.join("build"), out.join("include"));
-    for row in rows(&dir.join("files.tsv"))? {
-        let (class, path, digest) = (&row[0], &row[1], &row[2]);
-        let base = match class.as_str() {
-            "archive" => &src,
-            "generated" => &build,
-            "uapi" => &include,
-            _ => continue,
-        };
-        let bytes = fs::read(data.join("blobs").join(&digest[..2]).join(digest))
-            .map_err(|e| e.to_string())?;
-        if sha256::hex(&sha256::sha256(&bytes)) != *digest {
-            return fail(format!("blob for {path} does not match its SHA-256"));
-        }
-        let target = base.join(path);
-        fs::create_dir_all(target.parent().unwrap()).map_err(|e| e.to_string())?;
-        fs::write(&target, bytes).map_err(|e| e.to_string())?;
-    }
+    let inputs = out.join("inputs");
+    recorded_release.write_sources(&inputs)?;
+    let (src, build, include) = (
+        inputs.join("src"),
+        inputs.join("build"),
+        inputs.join("uapi"),
+    );
     // Only the compiler's own headers and the recorded UAPI headers are visible.
     let clang = run(&compiler, &["--version".into()], Path::new("."))?.contains("clang");
     let mut extra = Vec::new();
@@ -470,7 +468,7 @@ fn replay() -> Result<bool, String> {
     // A relocatable link adds nothing of its own: no PIE, no build ID.
     let mut link_extra: Vec<String> = extra.iter().take(usize::from(clang)).cloned().collect();
     link_extra.extend(["-no-pie".to_string(), "-Wl,--build-id=none".into()]);
-    let recorded: BTreeMap<String, String> = rows(&dir.join("release.tsv"))?
+    let recorded: BTreeMap<String, String> = text_rows(recorded_release.table("release.tsv")?)
         .into_iter()
         .filter_map(|r| Some((r.first()?.clone(), r.get(1)?.clone())))
         .collect();
@@ -481,7 +479,7 @@ fn replay() -> Result<bool, String> {
         src.to_string_lossy().into_owned(),
         build.to_string_lossy().into_owned(),
     );
-    let objects = rows(&dir.join("objects.tsv"))?;
+    let objects = text_rows(recorded_release.table("objects.tsv")?);
     // Reviewed differences: release, object, compiler family, exact difference, reason.
     let accepted_path = root.join("qualification/accepted-differences.tsv");
     let accepted = if accepted_path.exists() {
@@ -717,7 +715,7 @@ mod tests {
             )
             .collect();
         fs::write(&path, lines.join("\n") + "\n").unwrap();
-        let read = read_interfaces(&path).unwrap();
+        let read = read_interfaces(&fs::read_to_string(&path).unwrap()).unwrap();
         fs::remove_dir_all(&dir).unwrap();
         assert_eq!(read["csu/start.o"], (interface, "ab".to_string()));
     }

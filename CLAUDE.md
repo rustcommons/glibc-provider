@@ -18,9 +18,10 @@ The design is in linux-abi-tools'
 | `data/` | glibc source files and generated headers, unmodified, stored by content; per-release manifests and compile commands | LGPL-2.1-or-later (glibc); kernel UAPI headers GPL-2.0 WITH Linux-syscall-note |
 | `collector/` | `glibc-provider-collect` records `data/` from a qualified linux-abi-tools build tree; `glibc-provider-replay` rebuilds and compares the objects with a local compiler ([docs/REPLAY.md](docs/REPLAY.md)) | MIT (not published) |
 | `qualification/` | Reviewed differences accepted by the replay comparison, each with its reason | MIT |
+| `src/`, `pack/`, `tests/` | The `glibc-provider-sources` crate; `pack/sources.gz` is all of `data/`, written by `glibc-provider-pack` | LGPL-2.1-or-later; the pack keeps the data's licenses |
 
 Its consumer is `libc-abi-tools` (rustcommons/linux-abi-tools) and, through it,
-`cargo-libc`. The published crates are `glibc-provider-sources` (planned) and,
+`cargo-libc`. The crates are `glibc-provider-sources` (this repository's root) and,
 after legal review, `glibc-provider-binaries`.
 
 ## Scope and implementation
@@ -49,7 +50,8 @@ Run `cargo fmt --all -- --check`, `cargo test --workspace --locked --offline`, a
 `cargo clippy --workspace --all-targets --locked --offline -- -D warnings`. Data
 changes also require the collector's `--check` against the build trees, and
 `glibc-provider-replay --record` to re-record `interfaces.tsv`; the Replay workflow
-then qualifies each GCC version against it. Packaging
+then qualifies each GCC version against it. Then regenerate the pack with
+`glibc-provider-pack` (Linux, needs `gzip`); CI runs `glibc-provider-pack --check`. Packaging
 changes require `cargo package --locked`. Never publish to crates.io without the
 user's go-ahead.
 

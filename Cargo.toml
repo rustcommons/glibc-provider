@@ -1,6 +1,38 @@
-# The collector is MIT licensed and never published; see CLAUDE.md. The data
-# crates (glibc-provider-sources, then glibc-provider-binaries) are added when
-# their format is settled.
+[package]
+name = "glibc-provider-sources"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+description = "The exact glibc sources, compile commands and headers behind cargo-libc's link providers (x86_64, glibc 2.17-2.44), for building them locally"
+repository = "https://github.com/rustcommons/glibc-provider"
+documentation = "https://docs.rs/glibc-provider-sources"
+# The crate's code and the glibc files are LGPL-2.1-or-later; the Linux UAPI
+# headers keep their own licenses (see NOTICE.md and src/lib.rs, LICENSE).
+license = "LGPL-2.1-or-later AND GPL-2.0-only WITH Linux-syscall-note AND GPL-2.0-or-later WITH Linux-syscall-note AND LGPL-2.1-only WITH Linux-syscall-note AND LGPL-2.1-or-later WITH Linux-syscall-note AND BSD-3-Clause AND MIT"
+readme = "README.md"
+keywords = ["glibc", "linux", "sysroot", "cross-compilation", "linker"]
+categories = ["development-tools::build-utils"]
+include = [
+    "src/**",
+    "pack/sources.gz",
+    "Cargo.toml",
+    "README.md",
+    "NOTICE.md",
+    "LICENSES/**",
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+
+# The collector is MIT licensed and never published; see CLAUDE.md.
 [workspace]
 members = ["collector"]
 resolver = "2"
+
+# Decoding and hashing the pack is slow without optimization.
+[profile.dev.package.glibc-provider-sources]
+opt-level = 3
+[profile.test.package.glibc-provider-sources]
+opt-level = 3

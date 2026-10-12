@@ -5,3 +5,10 @@ version = 4
 [[package]]
 name = "glibc-provider-collector"
 version = "0.1.0"
+dependencies = [
+ "glibc-provider-sources",
+]
+
+[[package]]
+name = "glibc-provider-sources"
+version = "0.1.0"
