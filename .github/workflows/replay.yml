@@ -74,4 +74,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: reports-${{ strategy.job-index }}
-          path: out/
+          path: |
+            out/summary.md
+            out/*.log
+            out/*/report.tsv

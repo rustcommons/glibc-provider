@@ -90,6 +90,34 @@ glibc itself is only supported with GCC, so this result is expected.
 GCC. The full reasoning, including what goes wrong with Clang, is in
 [PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md#why-source-mode-compiles-with-gcc-not-clang).
 
+## GCC versions (CI, 2026-10-12)
+
+The [Replay workflow](../.github/workflows/replay.yml) rebuilds all 28 releases with
+each compiler below on every push and weekly, and compares them with the recorded
+interfaces ([run 38191162456](https://github.com/rustcommons/glibc-provider/actions/runs/38191162456)). Upstream GCC comes from the official `gcc`
+images (no distribution defaults); distribution GCC comes from each distribution's
+own packages, with its defaults.
+
+| Compiler | binutils | identical-bytes | equivalent | accepted | differs | build-failed |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| GCC 11.5.0 (Rocky Linux 9) | 2.35.2 | 374 | 112 | 5 | 0 | 0 |
+| GCC 12.5.0 | 2.40 | 374 | 112 | 5 | 0 | 0 |
+| GCC 13.5.0 | 2.40 | 374 | 112 | 5 | 0 | 0 |
+| GCC 13.3.0 (Ubuntu 24.04) | 2.42 | 374 | 112 | 5 | 0 | 0 |
+| GCC 14.2.0 (Debian 13) | 2.44 | 366 | 120 | 5 | 0 | 0 |
+| GCC 14.4.0 | 2.44 | 366 | 120 | 5 | 0 | 0 |
+| GCC 15.3.0 | 2.44 | 366 | 120 | 5 | 0 | 0 |
+| GCC 15.3.1 (Fedora 43) | 2.45.1 | 365 | 121 | 5 | 0 | 0 |
+| GCC 16.2.0 | 2.44 | 366 | 120 | 5 | 0 | 0 |
+
+Every version reproduces every release.
+- From GCC 14, `crt1.o` of 2.37–2.44 is equivalent rather than byte-identical
+  (instruction selection).
+- Fedora 43 also gives an equivalent 2.44 `static-reloc.o`.
+- Fedora's assembler adds an x86 "ISA used" `.note.gnu.property` to every object.
+  The first run therefore failed every object, until the replay switched that
+  default off like the other distribution defaults.
+
 Build failures per release (Clang 18):
 
 | Releases | Objects that fail to build |
@@ -103,9 +131,9 @@ Build failures per release (Clang 18):
 
 ## Not yet covered
 
-- **Other compiler versions:** these results are for one GCC and one Clang. Other
-  GCC versions (12, 14, 15) and Clang versions need the same run; CI will run them
-  for every release.
+- **Other GCC versions:** GCC older than 11 and versions not listed above are not
+  qualified. Clang is not repeated: the attribute problem is a language difference,
+  not a version difference.
 - **Full suites:** the object comparison is necessary but not sufficient. The
   replayed provider must also pass linux-abi-tools' application, exhaustive-link and
   Cargo suites (roadmap step "Qualify every release in every mode").
