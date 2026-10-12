@@ -65,7 +65,7 @@ jobs:
             ld --version | head -1
             echo '```'
             echo
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
           status=0
           qualification/replay-all.sh ./glibc-provider-replay gcc out || status=$?
           cat out/summary.md >> "$GITHUB_STEP_SUMMARY"
