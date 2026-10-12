@@ -33,7 +33,8 @@ container, then audits and tests the result (84 hosted jobs). The collector:
   objects by their bytes;
 - records every input of every compiled object from glibc's own dependency files.
 
-See [docs/DATA.md](docs/DATA.md) for the format.
+See [docs/DATA.md](docs/DATA.md) for the format, and [docs/ROADMAP.md](docs/ROADMAP.md)
+for planned work.
 
 ## Regenerating
 
