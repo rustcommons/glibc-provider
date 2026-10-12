@@ -16,13 +16,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@1.99.0
         with:
           targets: x86_64-unknown-linux-musl
       # Static, so it runs in every image below.
       - run: cargo build --release --locked --offline --target x86_64-unknown-linux-musl -p glibc-provider-collector --bin glibc-provider-replay
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: replay
           path: target/x86_64-unknown-linux-musl/release/glibc-provider-replay
@@ -49,8 +49,8 @@ jobs:
     steps:
       - if: matrix.install
         run: ${{ matrix.install }}
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: replay
       - shell: bash
@@ -71,7 +71,7 @@ jobs:
           cat out/summary.md >> "$GITHUB_STEP_SUMMARY"
           exit $status
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports-${{ strategy.job-index }}
           path: out/
