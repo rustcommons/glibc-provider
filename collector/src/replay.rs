@@ -1,5 +1,5 @@
 //! Rebuilds a release's startup objects and nonshared archives from the
-//! recorded inputs with another compiler (Clang), and compares the result with
+//! recorded inputs with a local compiler, and compares the result with
 //! the container-built objects.
 //!
 //! glibc-provider-replay --release X.Y --compiler PATH --out DIR [--root DIR] [--compare WORK]
@@ -12,9 +12,14 @@
 //!    Dependency-file options are dropped.
 //! 3. Repeats the recorded relocatable links and builds each archive in the
 //!    recorded member order (`ar rcD`).
-//! 4. With --compare, compares every object and target with WORK's container
-//!    build: defined and undefined global symbols, allocated sections, and
-//!    relocations must match; identical allocated bytes are reported separately.
+//! 4. Compares every object with the container build: defined and undefined
+//!    global symbols, allocated sections, and references must match; identical
+//!    allocated bytes are reported separately. The reference is the release's
+//!    recorded `interfaces.tsv`, or WORK's build tree with --compare.
+//!
+//! glibc-provider-replay --release X.Y --record WORK [--root DIR]
+//!
+//! records `interfaces.tsv` from WORK's container-built objects.
 //!
 //! Writes DIR/report.tsv and exits nonzero if anything fails to build or differs.
 
@@ -123,7 +128,7 @@ fn translate(
 }
 
 /// What must match between two relocatable objects.
-#[derive(Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 struct Interface {
     /// Defined global/weak symbols: name, type, binding, visibility, section.
     defined: BTreeSet<String>,
@@ -148,7 +153,7 @@ fn relocation_form(kind: &str) -> String {
     }
 }
 
-fn interface(object: &Path) -> Result<(Interface, Vec<u8>), String> {
+fn interface(object: &Path) -> Result<(Interface, String), String> {
     let path = object.to_string_lossy().to_string();
     let here = Path::new(".");
     let headers = run("readelf", &["-W".into(), "-S".into(), path.clone()], here)?;
@@ -229,15 +234,83 @@ fn interface(object: &Path) -> Result<(Interface, Vec<u8>), String> {
             here,
         )?;
         bytes.extend(name.as_bytes());
+        bytes.push(0);
+        bytes.extend(hex_dump_bytes(&dump));
+    }
+    Ok((result, sha256::hex(&sha256::sha256(&bytes))))
+}
+
+/// The bytes of a `readelf -x` dump: each data line is `  0xADDRESS ` followed
+/// by up to four groups of eight hex digits in a fixed 35-column field, then
+/// the ASCII rendering.
+fn hex_dump_bytes(dump: &str) -> Vec<u8> {
+    let mut bytes = Vec::new();
+    for line in dump.lines() {
+        let Some(rest) = line.trim_start().strip_prefix("0x") else {
+            continue;
+        };
+        let Some((_, data)) = rest.split_once(' ') else {
+            continue;
+        };
+        let field: String = data
+            .chars()
+            .take(35)
+            .filter(|c| !c.is_whitespace())
+            .collect();
         bytes.extend(
-            dump.lines()
-                .skip(1)
-                .collect::<Vec<_>>()
-                .join("\n")
-                .into_bytes(),
+            (0..field.len() / 2)
+                .filter_map(|i| u8::from_str_radix(&field[2 * i..2 * i + 2], 16).ok()),
         );
     }
-    Ok((result, bytes))
+    bytes
+}
+
+/// An object's interface as `interfaces.tsv` rows (without the object column):
+/// kind and value, with the SHA-256 of the allocated bytes as kind `bytes`.
+fn interface_rows(interface: &Interface, digest: &str) -> Vec<String> {
+    let mut rows = Vec::new();
+    rows.extend(interface.defined.iter().map(|v| format!("defined\t{v}")));
+    rows.extend(
+        interface
+            .undefined
+            .iter()
+            .map(|v| format!("undefined\t{v}")),
+    );
+    rows.extend(interface.sections.iter().map(|v| format!("section\t{v}")));
+    rows.extend(
+        interface
+            .relocations
+            .iter()
+            .map(|(s, f, n)| format!("reference\t{s} {f} {n}")),
+    );
+    rows.push(format!("bytes\t{digest}"));
+    rows
+}
+
+/// Reads `interfaces.tsv`: object -> (interface, allocated-bytes SHA-256).
+fn read_interfaces(path: &Path) -> Result<BTreeMap<String, (Interface, String)>, String> {
+    let mut map: BTreeMap<String, (Interface, String)> = BTreeMap::new();
+    for row in rows(path)? {
+        let [object, kind, value] = &row[..] else {
+            return fail(format!("{}: malformed row {row:?}", path.display()));
+        };
+        let (interface, digest) = map.entry(object.clone()).or_default();
+        match kind.as_str() {
+            "defined" => drop(interface.defined.insert(value.clone())),
+            "undefined" => drop(interface.undefined.insert(value.clone())),
+            "section" => drop(interface.sections.insert(value.clone())),
+            "reference" => {
+                let mut parts = value.splitn(3, ' ').map(String::from);
+                let (Some(s), Some(f), Some(n)) = (parts.next(), parts.next(), parts.next()) else {
+                    return fail(format!("{}: malformed reference {value}", path.display()));
+                };
+                interface.relocations.insert((s, f, n));
+            }
+            "bytes" => *digest = value.clone(),
+            _ => return fail(format!("{}: unknown kind {kind}", path.display())),
+        }
+    }
+    Ok(map)
 }
 
 fn describe(a: &Interface, b: &Interface) -> String {
@@ -285,6 +358,7 @@ fn replay() -> Result<bool, String> {
     let mut out = None;
     let mut root = PathBuf::from(".");
     let mut compare = None;
+    let mut record = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         let mut value = |name: &str| args.next().ok_or_else(|| format!("{name} needs a value"));
@@ -294,14 +368,28 @@ fn replay() -> Result<bool, String> {
             "--out" => out = Some(PathBuf::from(value("--out")?)),
             "--root" => root = PathBuf::from(value("--root")?),
             "--compare" => compare = Some(PathBuf::from(value("--compare")?)),
+            "--record" => record = Some(PathBuf::from(value("--record")?)),
             _ => return fail(format!("unknown argument {arg}")),
         }
     }
-    let (Some(release), Some(compiler), Some(out)) = (release, compiler, out) else {
-        return fail("usage: glibc-provider-replay --release X.Y --compiler PATH --out DIR [--root DIR] [--compare WORK]");
+    let usage = "usage: glibc-provider-replay --release X.Y --compiler PATH --out DIR [--root DIR] [--compare WORK]
+       glibc-provider-replay --release X.Y --record WORK [--root DIR]";
+    let Some(release) = release else {
+        return fail(usage);
     };
     let data = root.join("data");
     let dir = data.join(&release);
+    if let Some(work) = record {
+        return record_interfaces(&dir, &work);
+    }
+    let (Some(compiler), Some(out)) = (compiler, out) else {
+        return fail(usage);
+    };
+    let recorded_interfaces = if compare.is_none() {
+        read_interfaces(&dir.join("interfaces.tsv"))?
+    } else {
+        BTreeMap::new()
+    };
     if out.exists() {
         return fail(format!("{} must not exist", out.display()));
     }
@@ -439,14 +527,19 @@ fn replay() -> Result<bool, String> {
             ));
         }
     }
-    if let Some(work) = compare {
+    {
         for object in &built {
-            let (container, replayed) =
-                (work.join("source-build").join(object), build.join(object));
+            let replayed = build.join(object);
             if !replayed.exists() {
                 continue;
             }
-            let (a, a_bytes) = interface(&container)?;
+            let (a, a_bytes) = match &compare {
+                Some(work) => interface(&work.join("source-build").join(object))?,
+                None => match recorded_interfaces.get(object) {
+                    Some(recorded) => recorded.clone(),
+                    None => return fail(format!("interfaces.tsv lacks {object}")),
+                },
+            };
             let (r, r_bytes) = interface(&replayed)?;
             let difference = describe(&a, &r);
             let family = if clang { "clang" } else { "gcc" };
@@ -482,6 +575,36 @@ fn replay() -> Result<bool, String> {
     }
     println!("glibc {release} with {compiler}: {counts:?}");
     Ok(ok)
+}
+
+/// Records the interface of every container-built object in DIR/interfaces.tsv,
+/// the reference a replay is compared with when no build tree is at hand.
+fn record_interfaces(dir: &Path, work: &Path) -> Result<bool, String> {
+    let mut objects: Vec<String> = rows(&dir.join("objects.tsv"))?
+        .into_iter()
+        .map(|r| r[2].clone())
+        .collect();
+    objects.sort();
+    objects.dedup();
+    let mut lines = vec!["object	kind	value".to_string()];
+    for object in objects {
+        let (interface, digest) = interface(&work.join("source-build").join(&object))?;
+        lines.extend(
+            interface_rows(&interface, &digest)
+                .into_iter()
+                .map(|row| format!("{object}	{row}")),
+        );
+    }
+    fs::write(
+        dir.join("interfaces.tsv"),
+        lines.join(
+            "
+",
+        ) + "
+",
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(true)
 }
 
 fn main() {
@@ -535,6 +658,44 @@ mod tests {
             ""
         );
         assert_ne!(describe(&refs(&[("R_X86_64_PC32", "h")]), &refs(&[])), "");
+    }
+
+    #[test]
+    fn reads_hex_dumps_without_the_ascii_column() {
+        let dump = "\nHex dump of section '.rodata.cst4':\n  0x00000000 01000200 deadbeef 31ed4989 ab       ........1.I..\n  0x00000010 cafe                                ..\n";
+        assert_eq!(
+            hex_dump_bytes(dump),
+            [1, 0, 2, 0, 0xde, 0xad, 0xbe, 0xef, 0x31, 0xed, 0x49, 0x89, 0xab, 0xca, 0xfe]
+        );
+    }
+
+    #[test]
+    fn recorded_interfaces_read_back_unchanged() {
+        let interface = Interface {
+            defined: ["_start FUNC GLOBAL DEFAULT .text".to_string()].into(),
+            undefined: ["main GLOBAL".to_string()].into(),
+            sections: [".text AX".to_string()].into(),
+            relocations: [(
+                ".rela.text".to_string(),
+                "got".to_string(),
+                "__libc_start_main".to_string(),
+            )]
+            .into(),
+        };
+        let dir = std::env::temp_dir().join(format!("replay-test-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("interfaces.tsv");
+        let lines: Vec<String> = std::iter::once("object\tkind\tvalue".to_string())
+            .chain(
+                interface_rows(&interface, "ab")
+                    .into_iter()
+                    .map(|r| format!("csu/start.o\t{r}")),
+            )
+            .collect();
+        fs::write(&path, lines.join("\n") + "\n").unwrap();
+        let read = read_interfaces(&path).unwrap();
+        fs::remove_dir_all(&dir).unwrap();
+        assert_eq!(read["csu/start.o"], (interface, "ab".to_string()));
     }
 
     #[test]

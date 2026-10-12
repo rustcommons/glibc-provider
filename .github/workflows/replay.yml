@@ -1,0 +1,77 @@
+name: Replay
+# Rebuilds every release's startup objects and nonshared archives with each GCC
+# version and compares them with the recorded container build (docs/REPLAY.md).
+# A failing entry means linux-abi-tools' `source` mode must not be offered with
+# that compiler. Image tags float deliberately: the question is whether the GCC
+# users have today reproduces the objects; each job records its exact version.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * 1"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+        with:
+          targets: x86_64-unknown-linux-musl
+      # Static, so it runs in every image below.
+      - run: cargo build --release --locked --offline --target x86_64-unknown-linux-musl -p glibc-provider-collector --bin glibc-provider-replay
+      - uses: actions/upload-artifact@v4
+        with:
+          name: replay
+          path: target/x86_64-unknown-linux-musl/release/glibc-provider-replay
+  replay:
+    needs: build
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Upstream GCC releases, without distribution defaults.
+          - { name: GCC 12, image: "gcc:12" }
+          - { name: GCC 13, image: "gcc:13" }
+          - { name: GCC 14, image: "gcc:14" }
+          - { name: GCC 15, image: "gcc:15" }
+          - { name: GCC 16, image: "gcc:16" }
+          # Distribution GCC, with the defaults users actually get.
+          - { name: Rocky Linux 9 (GCC 11), image: "rockylinux:9", install: "dnf install -y gcc binutils" }
+          - { name: Ubuntu 24.04 (GCC 13), image: "ubuntu:24.04", install: "apt-get update && apt-get install -y gcc binutils" }
+          - { name: Debian 13 (GCC 14), image: "debian:trixie", install: "apt-get update && apt-get install -y gcc binutils" }
+          - { name: Fedora 43 (GCC 15), image: "fedora:43", install: "dnf install -y gcc binutils" }
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    steps:
+      - if: matrix.install
+        run: ${{ matrix.install }}
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: replay
+      - shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x glibc-provider-replay
+          {
+            echo "## ${{ matrix.name }}"
+            echo
+            echo '```'
+            gcc --version | head -1
+            ld --version | head -1
+            echo '```'
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          status=0
+          qualification/replay-all.sh ./glibc-provider-replay gcc out || status=$?
+          cat out/summary.md >> "$GITHUB_STEP_SUMMARY"
+          exit $status
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ strategy.job-index }}
+          path: out/

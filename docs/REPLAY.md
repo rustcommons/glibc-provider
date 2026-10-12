@@ -6,9 +6,14 @@ object with the container build. This is the qualification for linux-abi-tools'
 `source` delivery mode ([PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md)).
 
 ```sh
-glibc-provider-replay --release 2.28 --compiler gcc --out /tmp/replay-2.28 \
-  --compare /tmp/glibc-2.28-work
+glibc-provider-replay --release 2.28 --compiler gcc --out /tmp/replay-2.28
+qualification/replay-all.sh path/to/glibc-provider-replay gcc /tmp/replay
 ```
+
+Each object is compared with the release's recorded `interfaces.tsv`
+([DATA.md](DATA.md#interfacestsv)), so no container build is needed. With a build
+tree at hand, `--compare /tmp/glibc-2.28-work` compares with its objects directly,
+and `--record /tmp/glibc-2.28-work` (re)records `interfaces.tsv` from them.
 
 ## How a command is replayed
 

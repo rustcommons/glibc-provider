@@ -1,0 +1,177 @@
+object	kind	value
+csu/abi-note.o	section	.note.ABI-tag A
+csu/abi-note.o	bytes	969958ee53fdf691b73cbe52f0a08ed9c6d9f27c0d2b38c55357220a59a2a725
+csu/crt1.o	defined	_IO_stdin_used OBJECT GLOBAL DEFAULT .rodata.cst4
+csu/crt1.o	defined	__data_start NOTYPE GLOBAL DEFAULT .data
+csu/crt1.o	defined	_start FUNC GLOBAL DEFAULT .text
+csu/crt1.o	defined	data_start NOTYPE WEAK DEFAULT .data
+csu/crt1.o	undefined	__libc_csu_fini GLOBAL
+csu/crt1.o	undefined	__libc_csu_init GLOBAL
+csu/crt1.o	undefined	__libc_start_main GLOBAL
+csu/crt1.o	undefined	main GLOBAL
+csu/crt1.o	section	.data WA
+csu/crt1.o	section	.eh_frame A
+csu/crt1.o	section	.note.ABI-tag A
+csu/crt1.o	section	.rodata.cst4 AM
+csu/crt1.o	section	.text AX
+csu/crt1.o	reference	.rela.eh_frame pc-relative .text
+csu/crt1.o	reference	.rela.text got __libc_csu_fini
+csu/crt1.o	reference	.rela.text got __libc_csu_init
+csu/crt1.o	reference	.rela.text got __libc_start_main
+csu/crt1.o	reference	.rela.text got main
+csu/crt1.o	bytes	f7d2b10f476ac58fa915c6711248c7fcab5d68e6f06af320da368a7a7c20d956
+csu/crti.o	defined	_fini FUNC GLOBAL HIDDEN .fini
+csu/crti.o	defined	_init FUNC GLOBAL HIDDEN .init
+csu/crti.o	undefined	__gmon_start__ WEAK
+csu/crti.o	section	.fini AX
+csu/crti.o	section	.init AX
+csu/crti.o	reference	.rela.init got __gmon_start__
+csu/crti.o	bytes	5bdf8df646e31eed8121588f5b8b820c7b97d82a35d909a03550fa33ff6ede96
+csu/crtn.o	section	.fini AX
+csu/crtn.o	section	.init AX
+csu/crtn.o	bytes	d0126b9602d9a634c6d78c2a0ef2d811fe5b21728f86d21d52e6a8042f8d78c7
+csu/elf-init.oS	defined	__libc_csu_fini FUNC GLOBAL DEFAULT .text
+csu/elf-init.oS	defined	__libc_csu_init FUNC GLOBAL DEFAULT .text
+csu/elf-init.oS	undefined	__init_array_end GLOBAL
+csu/elf-init.oS	undefined	__init_array_start GLOBAL
+csu/elf-init.oS	undefined	_init GLOBAL
+csu/elf-init.oS	section	.eh_frame A
+csu/elf-init.oS	section	.text AX
+csu/elf-init.oS	reference	.rela.eh_frame pc-relative .text
+csu/elf-init.oS	reference	.rela.text pc-relative __init_array_end
+csu/elf-init.oS	reference	.rela.text pc-relative __init_array_start
+csu/elf-init.oS	reference	.rela.text pc-relative _init
+csu/elf-init.oS	bytes	f1e244cda39fecaab59030651144163edb8c9a33da4b7d5053212bb8104c168f
+csu/init.o	defined	_IO_stdin_used OBJECT GLOBAL DEFAULT .rodata.cst4
+csu/init.o	section	.rodata.cst4 AM
+csu/init.o	bytes	9e694ac5eed73904fff769a481c38efd61bb274b93d4099d8d5b9abdd980a2dc
+csu/start.o	defined	__data_start NOTYPE GLOBAL DEFAULT .data
+csu/start.o	defined	_start FUNC GLOBAL DEFAULT .text
+csu/start.o	defined	data_start NOTYPE WEAK DEFAULT .data
+csu/start.o	undefined	__libc_csu_fini GLOBAL
+csu/start.o	undefined	__libc_csu_init GLOBAL
+csu/start.o	undefined	__libc_start_main GLOBAL
+csu/start.o	undefined	main GLOBAL
+csu/start.o	section	.data WA
+csu/start.o	section	.eh_frame A
+csu/start.o	section	.text AX
+csu/start.o	reference	.rela.eh_frame pc-relative .text
+csu/start.o	reference	.rela.text got __libc_csu_fini
+csu/start.o	reference	.rela.text got __libc_csu_init
+csu/start.o	reference	.rela.text got __libc_start_main
+csu/start.o	reference	.rela.text got main
+csu/start.o	bytes	b5180e96b0c65622b333f6cf0dcf7b468a066585467229be79f1d7a327f32707
+csu/static-reloc.o	bytes	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+debug/stack_chk_fail_local.oS	defined	__stack_chk_fail_local FUNC GLOBAL HIDDEN .text
+debug/stack_chk_fail_local.oS	undefined	__stack_chk_fail GLOBAL
+debug/stack_chk_fail_local.oS	section	.eh_frame A
+debug/stack_chk_fail_local.oS	section	.text AX
+debug/stack_chk_fail_local.oS	reference	.rela.eh_frame pc-relative .text
+debug/stack_chk_fail_local.oS	reference	.rela.text pc-relative __stack_chk_fail
+debug/stack_chk_fail_local.oS	bytes	3963f6b520a2d3190bf2252e20549c22a7fe50ed479ced10557a66679e28c83d
+debug/warning-nop.oS	section	.eh_frame A
+debug/warning-nop.oS	section	.text AX
+debug/warning-nop.oS	reference	.rela.eh_frame pc-relative .text
+debug/warning-nop.oS	bytes	1ca45939b00fae7cc9833ea839eecf628c29be3262e7ee49eb6f80fee6178d4b
+io/fstat.oS	defined	__fstat FUNC GLOBAL HIDDEN .text
+io/fstat.oS	defined	fstat FUNC WEAK HIDDEN .text
+io/fstat.oS	undefined	__fxstat GLOBAL
+io/fstat.oS	section	.eh_frame A
+io/fstat.oS	section	.text AX
+io/fstat.oS	reference	.rela.eh_frame pc-relative .text
+io/fstat.oS	reference	.rela.text pc-relative __fxstat
+io/fstat.oS	bytes	185bd0204bcdd7e9a3bb0bf09e9ae9c8e4fe841fa2bef0f8751f4d6125431fe2
+io/fstat64.oS	defined	fstat64 FUNC GLOBAL HIDDEN .text
+io/fstat64.oS	undefined	__fxstat64 GLOBAL
+io/fstat64.oS	section	.eh_frame A
+io/fstat64.oS	section	.text AX
+io/fstat64.oS	reference	.rela.eh_frame pc-relative .text
+io/fstat64.oS	reference	.rela.text pc-relative __fxstat64
+io/fstat64.oS	bytes	185bd0204bcdd7e9a3bb0bf09e9ae9c8e4fe841fa2bef0f8751f4d6125431fe2
+io/fstatat.oS	defined	fstatat FUNC GLOBAL HIDDEN .text
+io/fstatat.oS	undefined	__fxstatat GLOBAL
+io/fstatat.oS	section	.eh_frame A
+io/fstatat.oS	section	.text AX
+io/fstatat.oS	reference	.rela.eh_frame pc-relative .text
+io/fstatat.oS	reference	.rela.text pc-relative __fxstatat
+io/fstatat.oS	bytes	3030f96e59c062f83b75acb6531dc8d14c7224e91f0ad022748f1f8880f7a433
+io/fstatat64.oS	defined	fstatat64 FUNC GLOBAL HIDDEN .text
+io/fstatat64.oS	undefined	__fxstatat64 GLOBAL
+io/fstatat64.oS	section	.eh_frame A
+io/fstatat64.oS	section	.text AX
+io/fstatat64.oS	reference	.rela.eh_frame pc-relative .text
+io/fstatat64.oS	reference	.rela.text pc-relative __fxstatat64
+io/fstatat64.oS	bytes	3030f96e59c062f83b75acb6531dc8d14c7224e91f0ad022748f1f8880f7a433
+io/lstat.oS	defined	__lstat FUNC GLOBAL HIDDEN .text
+io/lstat.oS	defined	lstat FUNC WEAK HIDDEN .text
+io/lstat.oS	undefined	__lxstat GLOBAL
+io/lstat.oS	section	.eh_frame A
+io/lstat.oS	section	.text AX
+io/lstat.oS	reference	.rela.eh_frame pc-relative .text
+io/lstat.oS	reference	.rela.text pc-relative __lxstat
+io/lstat.oS	bytes	401fc5a46dba144584337fe0a4827e5601bffacf84e8d1fbca6aa56108b4beea
+io/lstat64.oS	defined	lstat64 FUNC GLOBAL HIDDEN .text
+io/lstat64.oS	undefined	__lxstat64 GLOBAL
+io/lstat64.oS	section	.eh_frame A
+io/lstat64.oS	section	.text AX
+io/lstat64.oS	reference	.rela.eh_frame pc-relative .text
+io/lstat64.oS	reference	.rela.text pc-relative __lxstat64
+io/lstat64.oS	bytes	401fc5a46dba144584337fe0a4827e5601bffacf84e8d1fbca6aa56108b4beea
+io/mknod.oS	defined	__mknod FUNC GLOBAL HIDDEN .text
+io/mknod.oS	defined	mknod FUNC WEAK HIDDEN .text
+io/mknod.oS	undefined	__xmknod GLOBAL
+io/mknod.oS	section	.eh_frame A
+io/mknod.oS	section	.text AX
+io/mknod.oS	reference	.rela.eh_frame pc-relative .text
+io/mknod.oS	reference	.rela.text pc-relative __xmknod
+io/mknod.oS	bytes	b010db9a0ad16d9325ddda0e695a8570fa4236a6c9a362cd7fdc56af1679bd3f
+io/mknodat.oS	defined	mknodat FUNC GLOBAL HIDDEN .text
+io/mknodat.oS	undefined	__xmknodat GLOBAL
+io/mknodat.oS	section	.eh_frame A
+io/mknodat.oS	section	.text AX
+io/mknodat.oS	reference	.rela.eh_frame pc-relative .text
+io/mknodat.oS	reference	.rela.text pc-relative __xmknodat
+io/mknodat.oS	bytes	b51d81db14ac22504f6295f4001ad2465a59d87885056b6675d2be13946b18d0
+io/stat.oS	defined	__stat FUNC GLOBAL HIDDEN .text
+io/stat.oS	defined	stat FUNC WEAK HIDDEN .text
+io/stat.oS	undefined	__xstat GLOBAL
+io/stat.oS	section	.eh_frame A
+io/stat.oS	section	.text AX
+io/stat.oS	reference	.rela.eh_frame pc-relative .text
+io/stat.oS	reference	.rela.text pc-relative __xstat
+io/stat.oS	bytes	401fc5a46dba144584337fe0a4827e5601bffacf84e8d1fbca6aa56108b4beea
+io/stat64.oS	defined	stat64 FUNC GLOBAL HIDDEN .text
+io/stat64.oS	undefined	__xstat64 GLOBAL
+io/stat64.oS	section	.eh_frame A
+io/stat64.oS	section	.text AX
+io/stat64.oS	reference	.rela.eh_frame pc-relative .text
+io/stat64.oS	reference	.rela.text pc-relative __xstat64
+io/stat64.oS	bytes	401fc5a46dba144584337fe0a4827e5601bffacf84e8d1fbca6aa56108b4beea
+nptl/pthread_atfork.oS	defined	__pthread_atfork FUNC GLOBAL HIDDEN .text
+nptl/pthread_atfork.oS	defined	pthread_atfork FUNC WEAK HIDDEN .text
+nptl/pthread_atfork.oS	undefined	__dso_handle GLOBAL
+nptl/pthread_atfork.oS	undefined	__register_atfork GLOBAL
+nptl/pthread_atfork.oS	section	.eh_frame A
+nptl/pthread_atfork.oS	section	.text AX
+nptl/pthread_atfork.oS	reference	.rela.eh_frame pc-relative .text
+nptl/pthread_atfork.oS	reference	.rela.text pc-relative __dso_handle
+nptl/pthread_atfork.oS	reference	.rela.text pc-relative __register_atfork
+nptl/pthread_atfork.oS	bytes	e3eac8ebed66aa59daa3b7d10ad0345ce65f9748ab4b57bb57bcf1300ca57c59
+stdlib/at_quick_exit.oS	defined	at_quick_exit FUNC GLOBAL HIDDEN .text
+stdlib/at_quick_exit.oS	undefined	__cxa_at_quick_exit GLOBAL
+stdlib/at_quick_exit.oS	undefined	__dso_handle GLOBAL
+stdlib/at_quick_exit.oS	section	.eh_frame A
+stdlib/at_quick_exit.oS	section	.text AX
+stdlib/at_quick_exit.oS	reference	.rela.eh_frame pc-relative .text
+stdlib/at_quick_exit.oS	reference	.rela.text pc-relative __cxa_at_quick_exit
+stdlib/at_quick_exit.oS	reference	.rela.text pc-relative __dso_handle
+stdlib/at_quick_exit.oS	bytes	7434dfe52a212d5b38745eccc969b35feb2cda5c2720019ebf4789c2ec0af5ca
+stdlib/atexit.oS	defined	atexit FUNC GLOBAL HIDDEN .text
+stdlib/atexit.oS	undefined	__cxa_atexit GLOBAL
+stdlib/atexit.oS	undefined	__dso_handle GLOBAL
+stdlib/atexit.oS	section	.eh_frame A
+stdlib/atexit.oS	section	.text AX
+stdlib/atexit.oS	reference	.rela.eh_frame pc-relative .text
+stdlib/atexit.oS	reference	.rela.text pc-relative __cxa_atexit
+stdlib/atexit.oS	reference	.rela.text pc-relative __dso_handle
+stdlib/atexit.oS	bytes	6048685b685115ad6e3d9fcd7656c7ed6381aaf873f3eabf701f1537e51440b3

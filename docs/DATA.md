@@ -15,6 +15,7 @@ build tree of linux-abi-tools' provider pipeline; nothing is edited by hand.
 | `data/X.Y/inputs.tsv` | Each compiled object's inputs, from its dependency file |
 | `data/X.Y/files.tsv` | The distinct inputs of the release, with class, SHA-256 and size |
 | `data/X.Y/headers.tsv` | The installed headers (`usr/include`) of the release |
+| `data/X.Y/interfaces.tsv` | The interface of each container-built object, the reference a replay is compared with ([REPLAY.md](REPLAY.md)) |
 
 All tables are tab-separated with a header row, sorted, and written byte for byte
 reproducibly (`--check` regenerates and compares).
@@ -48,6 +49,22 @@ recorded objects are provably the ones in the archive.
 | `uapi` | `/usr/include` | Yes | The builder's Linux UAPI headers, as installed in the provider. The kernel's license, generally GPL-2.0 WITH Linux-syscall-note; each file's own SPDX tag applies. |
 | `compiler` | Absolute path in the builder | No (path only) | The builder compiler's own headers (`stddef.h`, `stdarg.h`, `limits.h`, `cpuid.h`, ...). A local build uses its own compiler's equivalents. |
 | `builder` | `builder-defaults.txt` | Yes | The builder compiler's predefined macros (`gcc -dM -E`). `release.tsv` derives `builder.gcc`, `builder.pie`, `builder.stack_protector`, `builder.cet` and `builder.fortify` from them: defaults that recorded commands leave implicit. |
+
+## `interfaces.tsv`
+
+Recorded from the container build tree by `glibc-provider-replay --release X.Y
+--record WORK`. One row per fact, in the comparison's terms
+([REPLAY.md](REPLAY.md#how-objects-are-compared)):
+
+| `kind` | `value` |
+| --- | --- |
+| `defined` | A defined global or weak symbol: name, type, binding, visibility, section |
+| `undefined` | An undefined global or weak symbol: name, binding |
+| `section` | A non-empty allocated section: name, flags |
+| `reference` | A reference: relocation section, form, symbol |
+| `bytes` | SHA-256 of the allocated sections' names and contents |
+
+It describes the objects; it contains no code or data from them.
 
 ## Measured totals (2026-10-11)
 
