@@ -61,6 +61,23 @@ fn run(program: &str, args: &[String], dir: &Path) -> Result<String, String> {
     Ok(String::from_utf8_lossy(&output.stdout).into_owned())
 }
 
+/// Whether the compiler accepts FLAG when assembling an empty file.
+fn accepts(compiler: &str, flag: &str, scratch: &Path) -> Result<bool, String> {
+    let (source, object) = (scratch.join("probe.s"), scratch.join("probe.o"));
+    fs::write(&source, "").map_err(|e| e.to_string())?;
+    let args = [
+        "-c".to_string(),
+        source.to_string_lossy().into_owned(),
+        "-o".into(),
+        object.to_string_lossy().into_owned(),
+        flag.into(),
+    ];
+    let accepted = run(compiler, &args, Path::new(".")).is_ok();
+    let _ = fs::remove_file(&source);
+    let _ = fs::remove_file(&object);
+    Ok(accepted)
+}
+
 /// Flags that make the builder's implicit code-generation defaults explicit
 /// and switch off the replaying compiler's own (distribution) defaults, for
 /// whatever a recorded command does not already set.
@@ -438,6 +455,13 @@ fn replay() -> Result<bool, String> {
             )?;
             extra.extend(["-isystem".to_string(), path.trim().to_string()]);
         }
+    }
+    // Some distributions (Fedora) build GNU as to add an x86 "ISA used" note to
+    // every object; the builders' assemblers did not. Older assemblers lack the
+    // option, so it is passed only where accepted.
+    let used_note = "-Wa,-mx86-used-note=no".to_string();
+    if !clang && accepts(&compiler, &used_note, &out)? {
+        extra.push(used_note);
     }
     extra.extend([
         "-isystem".to_string(),

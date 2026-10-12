@@ -29,7 +29,9 @@ and `--record /tmp/glibc-2.28-work` (re)records `interfaces.tsv` from them.
      (`builder.*` in `release.tsv`), are made explicit wherever the command does not
      set them: `-fPIE` or `-fno-pie`, and no stack protector, CET or fortification.
      The replaying compiler's own distribution defaults are switched off in the same
-     way (`-fcf-protection=none`, `-fno-stack-clash-protection`, `-U_FORTIFY_SOURCE`).
+     way (`-fcf-protection=none`, `-fno-stack-clash-protection`, `-U_FORTIFY_SOURCE`,
+     and, where the assembler accepts it, `-Wa,-mx86-used-note=no`: Fedora's GNU as
+     otherwise adds an x86 "ISA used" `.note.gnu.property` to every object).
 3. **Repeat the links and archives.** The `crt1.o` relocatable link is repeated
    (`-no-pie`, no build ID), and each archive is built in the recorded member order
    (`ar rcD`).
