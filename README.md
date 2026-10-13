@@ -21,7 +21,9 @@ host's GCC reproduces every release's objects ([docs/REPLAY.md](docs/REPLAY.md))
 cannot for 2.17–2.42, because it ignores attributes glibc's sources apply after a
 definition and would turn hidden symbols into exported ones. A local build therefore
 uses the host's GCC, as glibc itself requires. The crate `glibc-provider-sources` is
-built and qualified (below) and is not yet published to crates.io.
+built and qualified (below) and published on crates.io
+([0.1.0](https://crates.io/crates/glibc-provider-sources/0.1.0), 2026-10-13, tag `v0.1.0`
+at `1ae578cf7123399b0c710f44defab93cc2021001`).
 
 ## The crate
 

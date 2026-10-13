@@ -10,8 +10,9 @@ linux-abi-tools' [ROADMAP.md](https://github.com/rustcommons/linux-abi-tools/blo
 - [x] Add each release's library definitions (`libraries.tsv`), so `source` mode
   generates link stubs without glibc binaries, and the reviewed differences
   (`ACCEPTED_DIFFERENCES`) (2026-10-12). The pack is now 4.7 MB.
-- [ ] Publish it to crates.io together with the other crates at the release step
-  (user decision 2026-10-12).
+- [x] Publish it to crates.io together with the other crates at the release step
+  (user decision 2026-10-12): 0.1.0 on 2026-10-13 from
+  `1ae578cf7123399b0c710f44defab93cc2021001` (tag `v0.1.0`), before linux-abi-tools 0.3.0.
 - [ ] `glibc-provider-binaries` (the `prebuilt` mode's CI-built objects), after the
   legal review: storing glibc binaries in this public repository already distributes
   them, so neither the crate's data nor its objects are added before that review.
