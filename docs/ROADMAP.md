@@ -10,10 +10,5 @@ Open work only. The overall plan for provider delivery is in linux-abi-tools'
   them, so neither the crate's data nor its objects are added before that review.
   It needs complete Rust API documentation from its first release, as
   `glibc-provider-sources` has: an overview with a doc-test example, every public item
-  documented under `#![warn(missing_docs)]`, and docs.rs metadata.
-
-## Rust API documentation
-
-- [ ] Add a docs.rs badge to the README.
-- [ ] After each release, confirm the docs.rs build succeeded and the pages read
-  correctly.
+  documented under `#![warn(missing_docs)]`, docs.rs metadata and a docs.rs badge;
+  after its release, confirm the docs.rs build succeeded.

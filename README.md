@@ -2,6 +2,9 @@
 
 **The exact glibc sources behind a link provider, for every release 2.17–2.44.**
 
+[![crates.io](https://img.shields.io/crates/v/glibc-provider-sources)](https://crates.io/crates/glibc-provider-sources)
+[![docs.rs](https://img.shields.io/docsrs/glibc-provider-sources)](https://docs.rs/glibc-provider-sources)
+
 A glibc *link provider* lets Rust (through
 [cargo-libc](https://github.com/rustcommons/cargo-libc)) build for an older glibc
 than the host has. Besides link stubs generated from glibc's ABI lists, a provider
