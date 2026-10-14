@@ -137,4 +137,5 @@ Build failures per release (Clang 18):
   not a version difference.
 - **Full suites:** the object comparison is necessary but not sufficient. The
   replayed provider must also pass linux-abi-tools' application, exhaustive-link and
-  Cargo suites (roadmap step "Qualify every release in every mode").
+  Cargo suites, as every release does in its provider workflow
+  ([delivery modes per release](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDERS.md#delivery-modes-per-release)).
