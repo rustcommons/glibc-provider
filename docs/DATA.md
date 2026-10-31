@@ -105,7 +105,7 @@ their own (313 small headers such as wrapper `bits/` headers), which glibc's
 `pack/sources.gz` is all of `data/` in one file, written by `glibc-provider-pack` and
 compiled into the `glibc-provider-sources` crate.
 
-- **Contents:** every release's six tables (`2.28/release.tsv` …) and every stored
+- **Contents:** every release's seven tables (`2.28/release.tsv` …) and every stored
   file they name (`blobs/<sha256>`), each once. Compiler headers, recorded by path
   only, are not stored.
 - **Index:** the first line is `glibc-provider-pack 1`, the second the entry count,

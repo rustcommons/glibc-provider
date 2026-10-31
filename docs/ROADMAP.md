@@ -3,6 +3,9 @@
 Open work only. The overall plan for provider delivery is in linux-abi-tools'
 [ROADMAP.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/ROADMAP.md#provider-delivery).
 
+The [next-release plan](RELEASE-PLAN.md) separates repository documentation
+cleanup from changes that need a new crate publication.
+
 ## Data crates
 
 - [ ] `glibc-provider-binaries` (the `prebuilt` mode's CI-built objects), after the

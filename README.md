@@ -76,6 +76,9 @@ cargo run --release -p glibc-provider-collector -- \
 
 The pinned SHA-256 is in linux-abi-tools' `examples/glibc-X.Y/INPUTS.toml`.
 
+See the [next-release plan](docs/RELEASE-PLAN.md) for proposed scope, dependency
+coordination, and publication gates.
+
 ## Licenses
 
 The data is glibc's (LGPL-2.1-or-later) and, for the UAPI headers, the Linux
