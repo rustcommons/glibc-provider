@@ -1,86 +1,63 @@
 # glibc-provider
 
-**The exact glibc sources behind a link provider, for every release 2.17–2.44.**
+Source inputs for building glibc link providers for **x86_64 Linux**.
 
 [![crates.io](https://img.shields.io/crates/v/glibc-provider-sources)](https://crates.io/crates/glibc-provider-sources)
 [![docs.rs](https://img.shields.io/docsrs/glibc-provider-sources)](https://docs.rs/glibc-provider-sources)
 
-A glibc *link provider* lets Rust (through
-[cargo-libc](https://github.com/rustcommons/cargo-libc)) build for an older glibc
-than the host has. Besides link stubs generated from glibc's ABI lists, a provider
-needs real pieces of that glibc release: its startup objects (`crt1.o`, `crti.o`,
-`crtn.o`), `libc_nonshared.a`, and its headers.
+This repository publishes the `glibc-provider-sources` Rust library. It records
+source files, generated and installed headers, compile commands, and object/library
+metadata for glibc 2.17–2.44. linux-abi-tools uses these inputs to build link
+providers; [cargo-libc](https://github.com/rustcommons/cargo-libc) coordinates their
+use when building applications for an older glibc. Application developers should
+start with cargo-libc.
 
-This repository records, for each release, the exact source files those pieces
-were built from, the headers glibc's build generated for them, the compile
-commands, the installed headers, and the public definitions of its shared
-libraries (for the link stubs). With them, a provider can be built from
-source on a user's machine, with no container and no glibc binaries from us. The
-design is in linux-abi-tools'
-[PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md).
+## Use the library
 
-**Status:** data collected and verified for all 28 releases. Rebuilding with the
-host's GCC reproduces every release's objects ([docs/REPLAY.md](docs/REPLAY.md)); Clang
-cannot for 2.17–2.42, because it ignores attributes glibc's sources apply after a
-definition and would turn hidden symbols into exported ones. A local build therefore
-uses the host's GCC, as glibc itself requires. The crate `glibc-provider-sources` is
-built and qualified (below) and published on crates.io
-([0.1.0](https://crates.io/crates/glibc-provider-sources/0.1.0), 2026-10-13, tag `v0.1.0`
-at `1ae578cf7123399b0c710f44defab93cc2021001`).
+Requires Rust 1.90 or newer. Add this dependency to your project's `Cargo.toml`:
 
-## The crate
+```toml
+[dependencies]
+glibc-provider-sources = "0.1"
+```
 
-`glibc-provider-sources` compiles all of `data/` in as one pack of 4.7 MB, which
-decompresses to about 72 MiB:
+Put this example in `src/main.rs` and run `cargo run`:
 
 ```rust
-let sources = glibc_provider_sources::Sources::bundled()?; // checks every SHA-256
-let release = sources.release("2.28")?;
-release.write_sources("/tmp/glibc-2.28-inputs".as_ref())?; // src/, build/, uapi/
-release.write_headers("/tmp/glibc-2.28-include".as_ref())?; // a usr/include
-for object in release.objects()? {
-    println!("{} in {}: {}", object.object, object.directory, object.command);
+fn main() -> Result<(), String> {
+    let sources = glibc_provider_sources::Sources::bundled()?;
+    let release = sources.release("2.28")?;
+    for object in release.objects()? {
+        println!("{}: {}", object.object, object.command);
+    }
+    Ok(())
 }
 ```
 
-It has no dependencies; the gzip decoder and SHA-256 are its own, std-only. The pack
-format, and how it stays small, are in [docs/DATA.md](docs/DATA.md#the-crates-pack).
-`glibc-provider-replay` builds every release from the crate, and CI checks that the
-pack equals `data/` exactly.
+The example reads bundled data and checks its SHA-256 hashes without writing
+files. The std-only library embeds a roughly 4.7 MB pack that expands to about
+72 MiB; reading and extracting it need no GCC, external decompressor, or container.
+Extraction writes inputs, not compiled provider objects. Rebuilding those objects
+requires GCC and binutils on x86_64 Linux; see the tested configurations and limits
+in the [replay guide](https://github.com/rustcommons/glibc-provider/blob/main/docs/REPLAY.md).
 
-## Where the data comes from
+## Guides
 
-Only from the build trees of linux-abi-tools' provider pipeline. That pipeline builds
-each release from the official, pinned, signature-checked GNU archive in a pinned
-container, then audits and tests the result (84 hosted jobs). The collector:
+- [Reading and extracting data](https://github.com/rustcommons/glibc-provider/blob/main/docs/DATA.md#using-the-library), plus the [API reference](https://docs.rs/glibc-provider-sources).
+- [Rebuilding and comparing objects](https://github.com/rustcommons/glibc-provider/blob/main/docs/REPLAY.md).
+- [Collecting, regenerating, and validating data](https://github.com/rustcommons/glibc-provider/blob/main/docs/MAINTAINING.md).
+- [Release plan](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASE-PLAN.md) and [roadmap](https://github.com/rustcommons/glibc-provider/blob/main/docs/ROADMAP.md).
 
-- checks the archive's pinned SHA-256 and compares every recorded source file with
-  a fresh extraction of it;
-- checks every target against the installed copy, and matches archive members to
-  objects by their bytes;
-- records every input of every compiled object from glibc's own dependency files.
+## Provenance and licenses
 
-See [docs/DATA.md](docs/DATA.md) for the format, and [docs/ROADMAP.md](docs/ROADMAP.md)
-for planned work.
+Inputs come from linux-abi-tools' qualified provider build trees, built from
+pinned, signature-checked GNU archives. The collector verifies archive hashes,
+checks recorded archive files against a fresh extraction, and matches target
+objects against the installed build. Generated headers and kernel UAPI headers
+retain their recorded origins. No glibc binary objects are shipped in this crate.
 
-## Regenerating
-
-On Linux, with a linux-abi-tools work tree for the release (`examples/glibc-X.Y/run.sh`):
-
-```sh
-cargo run --release -p glibc-provider-collector -- \
-  --work /tmp/glibc-2.28-work --release 2.28 --archive-sha256 <pinned SHA-256>
-cargo run --release -p glibc-provider-collector -- \
-  --work /tmp/glibc-2.28-work --release 2.28 --archive-sha256 <pinned SHA-256> --check
-```
-
-The pinned SHA-256 is in linux-abi-tools' `examples/glibc-X.Y/INPUTS.toml`.
-
-See the [next-release plan](docs/RELEASE-PLAN.md) for proposed scope, dependency
-coordination, and publication gates.
-
-## Licenses
-
-The data is glibc's (LGPL-2.1-or-later) and, for the UAPI headers, the Linux
-kernel's (generally GPL-2.0 WITH Linux-syscall-note). The collector is MIT. See
-[NOTICE.md](NOTICE.md).
+The crate code and glibc data are LGPL-2.1-or-later; Linux UAPI headers retain
+their individual licenses, generally GPL-2.0 WITH Linux-syscall-note. The
+unpublished collector is MIT. See [NOTICE.md](https://github.com/rustcommons/glibc-provider/blob/main/NOTICE.md)
+for the full inventory and [DATA.md](https://github.com/rustcommons/glibc-provider/blob/main/docs/DATA.md)
+for provenance classes and the pack format.

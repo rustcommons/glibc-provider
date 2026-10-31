@@ -4,7 +4,9 @@ Open work only. The overall plan for provider delivery is in linux-abi-tools'
 [ROADMAP.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/ROADMAP.md#provider-delivery).
 
 The [next-release plan](RELEASE-PLAN.md) separates repository documentation
-cleanup from changes that need a new crate publication.
+cleanup from changes that need a new crate publication. The README and
+[maintenance guide](MAINTAINING.md) cleanup is complete in Git; see the plan for
+remaining release gates. No new crate release is implied.
 
 ## Data crates
 

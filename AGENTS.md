@@ -57,9 +57,10 @@ Run `cargo fmt --all -- --check`, `cargo test --workspace --locked --offline`, a
 changes also require the collector's `--check` against the build trees, and
 `glibc-provider-replay --record` to re-record `interfaces.tsv`, and linux-abi-tools'
 `libc-abi glibc libraries` to re-record `libraries.tsv`; the Replay workflow
-then qualifies each GCC version against it. Then regenerate the pack with
-`glibc-provider-pack` (Linux, needs `gzip`); CI runs `glibc-provider-pack --check`. Packaging
-changes require `cargo package --locked`. Never publish to crates.io without the
+qualifies each GCC version against it after regenerating the pack with
+`glibc-provider-pack` (Linux, needs `gzip`) and rebuilding replay to embed it.
+CI runs `glibc-provider-pack --check`; see [MAINTAINING.md](docs/MAINTAINING.md)
+for the full sequence. Packaging changes require `cargo package --locked`. Never publish to crates.io without the
 user's go-ahead.
 
 ## Git conventions

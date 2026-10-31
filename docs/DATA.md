@@ -5,6 +5,37 @@ rebuild that release's startup objects and nonshared archives from source, plus
 its installed headers. All of it is recorded by the collector from a qualified
 build tree of linux-abi-tools' provider pipeline; nothing is edited by hand.
 
+## Using the library
+
+[README](../README.md) covers the dependency and a non-writing first example.
+Use the [API reference](https://docs.rs/glibc-provider-sources) for individual
+methods; the sections below describe the tables and storage format.
+
+To extract one release's sources and installed headers:
+
+```rust
+fn main() -> Result<(), String> {
+    let sources = glibc_provider_sources::Sources::bundled()?;
+    let release = sources.release("2.28")?;
+    release.write_sources(std::path::Path::new("glibc-2.28-inputs"))?;
+    release.write_headers(std::path::Path::new("glibc-2.28-include"))?;
+    Ok(())
+}
+```
+
+Run in a writable directory. Both destination directories must be new and their
+parents must exist; a second run with the same paths fails rather than overwriting
+an extraction. Sources are placed in `src/`, `build/`, and `uapi/`, with
+`builder-defaults.txt`; headers are written directly under the include destination
+(the contents of `usr/include`, not another nested `usr/include`). A failed write
+can leave a partial destination, so inspect it and choose a fresh path before retrying.
+
+Reading/extraction uses the library's own decoder and SHA-256 implementation,
+without invoking GCC or an external decompressor. The recorded data targets
+x86_64 Linux; extraction does not compile a provider or make its compiler commands
+portable to other targets. For compilation use [REPLAY.md](REPLAY.md); for
+regenerating the records use [MAINTAINING.md](MAINTAINING.md).
+
 ## Layout
 
 | Path | Contents |

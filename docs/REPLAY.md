@@ -5,15 +5,47 @@ archives from the recorded inputs with a local compiler, and compares every
 object with the container build. This is the qualification for linux-abi-tools'
 `source` delivery mode ([PROVIDER-DELIVERY.md](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDER-DELIVERY.md)).
 
+## Build and run
+
+Run from the repository root on x86_64 Linux with Rust/Cargo 1.90 or newer,
+GCC and GNU binutils (`ar`, `readelf`, assembler and linker). No container build
+tree is needed for the default comparison. The tool is an unpublished workspace
+binary, so build it explicitly:
+
 ```sh
-glibc-provider-replay --release 2.28 --compiler gcc --out /tmp/replay-2.28
-qualification/replay-all.sh path/to/glibc-provider-replay gcc /tmp/replay
+cargo build --release --locked --offline -p glibc-provider-collector \
+  --bin glibc-provider-replay
+./target/release/glibc-provider-replay \
+  --release 2.28 --compiler gcc --out /tmp/replay-2.28
 ```
 
-Each object is compared with the release's recorded `interfaces.tsv`
-([DATA.md](DATA.md#interfacestsv)), so no container build is needed. With a build
-tree at hand, `--compare /tmp/glibc-2.28-work` compares with its objects directly,
-and `--record /tmp/glibc-2.28-work` (re)records `interfaces.tsv` from them.
+The output directory must not exist. Each run writes extracted inputs, rebuilt
+objects and `report.tsv` there; it exits nonzero on a build failure or unaccepted
+difference. Choose a new output directory for another run. After changing data,
+follow [MAINTAINING.md](MAINTAINING.md) to regenerate the pack and rebuild this
+executable, which embeds the pack at compile time.
+
+For all recorded releases, with Bash and GNU command-line tools available:
+
+```sh
+qualification/replay-all.sh ./target/release/glibc-provider-replay gcc /tmp/replay-all
+```
+
+Use a fresh output root. The script runs up to `nproc` releases concurrently,
+writing `X.Y/report.tsv`, `X.Y.log`, and `summary.md` under that root. It exits
+nonzero if a release fails or differs. On constrained machines run individual
+releases sequentially instead; the script has no worker-count option.
+
+## Reference selection
+
+Default replay compares against `interfaces.tsv` embedded in the pack. To compare
+directly with a qualified build tree, append `--compare /tmp/glibc-2.28-work` to
+the single-release command. `--record WORK` is a separate mode that writes the
+repository's reference table from a build tree, without compiling; see the
+[recording workflow](MAINTAINING.md#record-reference-interfaces-and-libraries).
+`--root DIR` selects the on-disk repository for recording; it does not replace
+the compiled-in pack used for normal replay. See [DATA.md](DATA.md) for the table
+format and the [README](../README.md) for library setup.
 
 ## How a command is replayed
 

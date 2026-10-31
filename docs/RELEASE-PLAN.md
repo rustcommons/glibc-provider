@@ -14,7 +14,8 @@ for incompatible API, pack-format, target-support, or observable data-contract
 changes; do not classify a data regeneration as a patch merely because signatures
 are unchanged. Review additions and changed provider output explicitly.
 
-The immediate scope is agent-instruction consolidation and this plan. No data,
+The documentation scope includes agent-instruction consolidation, this plan,
+README library setup, and extraction/replay/maintenance guides. No data,
 pack, API, compiler qualification, dependency, or license changes are proposed.
 The unpublished MIT collector remains a workspace tool, not a second public
 release. `glibc-provider-binaries` remains blocked on the legal review described
@@ -216,24 +217,23 @@ when warranted, a separately authorized yank. Rollback for consumers means
 selecting a known-good compatible version, reviewing/restoring their lock and
 rebuilding/requalifying outputs; a Git revert alone cannot recall a package.
 
-## Prioritized remaining documentation cleanup
+## Documentation cleanup completed (2026-10-31)
 
-1. README regeneration commands need explicit `--bin glibc-provider-collect` and
-   a shell-safe hash variable. Move the full collection/record/pack/check sequence
-   into a maintainer guide, retaining a README link.
-2. Add the library dependency snippet (`glibc-provider-sources = "0.1"`), MSRV,
-   a complete non-writing example, and explicit x86_64 Linux data scope. Do not
-   recommend `cargo install` for this library; direct application users to cargo-libc.
-3. Explain fresh extraction/replay directories and build the replay executable
-   before examples. Describe reports and the all-release script's `nproc`
-   concurrency. Keep detailed workflows in guides/API docs.
-4. Shorten README's historical status/Clang discussion; qualify GCC claims by the
-   tested configurations. Keep provenance/license summaries and dated evidence;
-   remove incidental CI job counts from the introduction.
-5. Correct the manifest comment pointing to CLAUDE.md when a manifest edit is
-   next authorized. It remains a valid shim, but AGENTS.md is now authoritative.
-   No manifest was changed in this documentation-only task.
+Completed in Git, without publishing a crate or regenerating data:
 
-The directly contradictory pack description in DATA.md is corrected from six to
-seven tables, matching `src/lib.rs::TABLES` and the recorded 196 release tables.
-Broader README/guide redesign remains separate from this plan.
+- README now names the published library, dependency, MSRV and x86_64 Linux data
+  scope, with a complete non-writing example and focused guide navigation.
+- [MAINTAINING.md](MAINTAINING.md) documents collect/check, interface/library
+  recording, safe hash handling, pack generation, rebuild and replay sequencing.
+- [DATA.md](DATA.md#using-the-library) covers extraction and fresh directories;
+  [REPLAY.md](REPLAY.md) covers build prerequisites, reports and concurrency.
+- README retains concise provenance/license information and links compiler claims
+  to dated qualification evidence. Detailed reference material stays in guides.
+- The manifest's authority comment points to AGENTS.md. Its package settings,
+  dependencies and versions are unchanged. The seven-table description is correct.
+
+Remaining gates are the release checklist above, including publication approval,
+package/MSRV/license checks and any consumer qualification warranted by a future
+code/data change. The updated packaged README does not replace the README in
+already-published 0.1.0; publication is a separate decision. Recheck the recorded
+crates.io page-rendering discrepancy before any release.
