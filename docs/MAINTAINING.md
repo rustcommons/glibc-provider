@@ -17,13 +17,13 @@ library, its pack and reviewed differences cross the package boundary.
 
 ```mermaid
 flowchart TB
-    W["Qualified linux-abi-tools work tree<br/>Pinned archive, build, installed files and logs"]
+    W["Qualified linux-abi-tools<br/>Provider work tree"]
     subgraph M["Maintainer recording and packing"]
-        C["collect<br/>Verify archive and installed targets"]
-        I["replay --record<br/>Read build objects and objects.tsv"]
-        L["libc-abi glibc libraries<br/>Validate public definitions against ABI lists"]
-        D["data/<br/>Source blobs, headers and seven tables"]
-        P["pack tool<br/>Write pack/sources.gz"]
+        C["collect<br/>Archive and target checks"]
+        I["replay --record<br/>Object interfaces"]
+        L["libc-abi glibc libraries<br/>Public definitions"]
+        D["data/<br/>Blobs and seven tables"]
+        P["pack tool<br/>pack/sources.gz"]
         W --> C
         W --> I
         W --> L
@@ -33,19 +33,19 @@ flowchart TB
         D --> P
     end
     subgraph B["Published glibc-provider-sources library"]
-        S["Sources::bundled<br/>Decode embedded pack and verify hashes"]
+        S["Sources::bundled<br/>Decode and verify"]
         A["Embedded accepted-differences.tsv"]
-        E["Release<br/>Read metadata or extract into new directories"]
+        E["Release<br/>Metadata and extraction"]
         S --> E
     end
     P -->|"embedded at compile time"| S
     subgraph H["Local use: compiled objects are not shipped"]
-        R["replay with host GCC and binutils<br/>Compare against recorded interfaces"]
-        V["Rebuilt objects and report.tsv"]
-        U["libc-abi-tools source provider<br/>Uses inputs and library metadata"]
+        R["replay<br/>Host GCC and binutils"]
+        V["Rebuilt objects<br/>report.tsv"]
+        U["libc-abi-tools<br/>Source provider"]
         E --> R
         A --> R
-        R --> V
+        R -->|"interface comparison"| V
         E --> U
     end
 ```
