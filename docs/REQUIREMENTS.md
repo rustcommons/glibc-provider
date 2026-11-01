@@ -48,7 +48,7 @@ The original 0.1.0 snapshot and baseline CI results remain historical evidence.
 | --- | --- | --- |
 | [README](../README.md) | Maintained guide | Setup-first entry point; absolute GitHub links reach excluded guides from package rendering. |
 | [DATA](DATA.md) | Maintained reference + historical evidence | API use, extraction and formats; explicitly dated totals are measurements, not fresh verification. |
-| [MAINTAINING](MAINTAINING.md) | Maintained guide | Authoritative collection/record/pack/replay sequence and prerequisites. |
+| [MAINTAINING](MAINTAINING.md), including [architecture and data flow](MAINTAINING.md#architecture-and-data-flow) | Maintained guide / architecture | Authoritative collection/record/pack/replay sequence and prerequisites; implemented package/local-build boundaries for GP-REQ-003–011, with GP-REQ-013–014 deferred/legal limits. |
 | [REPLAY](REPLAY.md) | Maintained reference + historical evidence | Commands and comparison contract; dated local/CI results retain their original scope. |
 | [RELEASE-PLAN](RELEASE-PLAN.md) | Maintained release guide + planned + historical evidence | Published 0.1.1 evidence, future gates and historical package defects; older version/dependency/preparation snapshots remain labeled. |
 | [ROADMAP](ROADMAP.md) | Planned + deferred | Prebuilt legal gate and deferred Tier 3; no implementation/qualification promises. |
