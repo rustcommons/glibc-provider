@@ -9,6 +9,70 @@ hand-edit `data/` or add unreviewed replay exceptions. This guide covers updatin
 an existing release; adding a release also requires a separately reviewed change
 to the crate's supported-release list and downstream qualification.
 
+## Architecture and data flow
+
+The arrows show implemented data flow, not proof that a fresh collection or
+qualification run passed. The maintainer tools are unpublished; only the source
+library, its pack and reviewed differences cross the package boundary.
+
+```mermaid
+flowchart TB
+    W["Qualified linux-abi-tools work tree<br/>Pinned archive, build, installed files and logs"]
+    subgraph M["Maintainer recording and packing"]
+        C["collect<br/>Verify archive and installed targets"]
+        I["replay --record<br/>Read build objects and objects.tsv"]
+        L["libc-abi glibc libraries<br/>Validate public definitions against ABI lists"]
+        D["data/<br/>Source blobs, headers and seven tables"]
+        P["pack tool<br/>Write pack/sources.gz"]
+        W --> C
+        W --> I
+        W --> L
+        C -->|"five tables and blobs"| D
+        I -->|"interfaces.tsv"| D
+        L -->|"libraries.tsv"| D
+        D --> P
+    end
+    subgraph B["Published glibc-provider-sources library"]
+        S["Sources::bundled<br/>Decode embedded pack and verify hashes"]
+        A["Embedded accepted-differences.tsv"]
+        E["Release<br/>Read metadata or extract into new directories"]
+        S --> E
+    end
+    P -->|"embedded at compile time"| S
+    subgraph H["Local use: compiled objects are not shipped"]
+        R["replay with host GCC and binutils<br/>Compare against recorded interfaces"]
+        V["Rebuilt objects and report.tsv"]
+        U["libc-abi-tools source provider<br/>Uses inputs and library metadata"]
+        E --> R
+        A --> R
+        R --> V
+        E --> U
+    end
+```
+
+Collection writes five tables; interface recording then reads the collected
+`objects.tsv`, and library recording uses the matching ABI lists. Both add
+metadata to `data/`; neither copies compiled object/library contents into the
+pack. `pack --check` compares decoded pack contents with `data/`; rebuild replay
+after repacking so it embeds the new inputs. Signature verification belongs to
+the upstream provider pipeline, while the collector verifies the supplied
+archive pin and pristine file bytes.
+
+These boundaries follow the [collector](../collector/src/main.rs),
+[interface recorder and replay](../collector/src/replay.rs),
+[pack tool](../collector/src/pack.rs), and [library API](../src/lib.rs).
+The [data reference](DATA.md) details classes and tables; the
+[replay guide](REPLAY.md) defines comparisons and qualification limits.
+This view traces existing [requirements](REQUIREMENTS.md#requirements)
+GP-REQ-003–011 and GP-REQ-013–014; it adds no new contract.
+
+The separate prebuilt implementation and `glibc-provider-binaries` remain
+**Deferred pending legal review** before distributing compiled provider objects;
+the compressed source pack is already in the source-only package. Tier 3
+old-system qualification remains **Deferred**, not a routine maintenance blocker.
+Object replay alone does not establish downstream application/link/Cargo or
+old-system qualification; see the [roadmap boundaries](ROADMAP.md).
+
 ## Prerequisites and working directories
 
 Run the commands below in the glibc-provider repository root, using Bash on
