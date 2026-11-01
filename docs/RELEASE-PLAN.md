@@ -30,12 +30,56 @@ documentation-only release. Do not trigger linux-abi-tools or cargo-libc release
 for guide links. No collector regeneration or broad replay matrix is needed for
 unchanged inputs; the prebuilt legal gate and deferred Tier 3 remain unchanged.
 
-Candidate-specific validation and source/package proof are recorded here when
-executed. Until then the historical baseline evidence below is not candidate
-evidence. After merge the coordinator must publish exactly the reviewed merged
-commit, then verify `v0.1.1` points to that released commit, the official archive
-checksum/contents and corrected README, and versioned docs.rs success. No tag,
-publication or registry success is claimed in this preparation record.
+### Candidate validation (2026-11-01)
+
+The code/package-input revision checked locally is
+[`8fda7f4`](https://github.com/rustcommons/glibc-provider/commit/8fda7f4edbb5c97fb267f82d2d8dbd71d39d221d).
+Subsequent evidence edits affect only excluded `docs/` records. Environment:
+aarch64 Linux, at most two Cargo build jobs; this is not x86_64 object replay.
+
+- Rust 1.90.0 (`1159e78c4`): `cargo +1.90.0 fmt --all -- --check` and
+  `cargo +1.90.0 test --workspace --locked --offline` passed: 28 unit/integration
+  tests and one API doctest. These test scopes do not certify all host systems.
+- Clippy 1.90.0 with `--workspace --all-targets --locked --offline -- -D warnings`
+  failed on the existing `nonminimal_bool` expression at `collector/src/main.rs:133`.
+  That source is identical to official 0.1.0 and was not changed or suppressed.
+  The required Clippy gate passed with CI's pinned Rust 1.99.0 (`b940084d7`):
+  `cargo +1.99.0 clippy --workspace --all-targets --locked --offline -- -D warnings`.
+  MSRV compilation/tests and CI-version lint policy are distinct checks.
+- `RUSTDOCFLAGS='-D warnings' cargo +1.90.0 doc --no-deps --workspace --locked --offline`
+  passed. API source and README Rust code blocks are unchanged from the audited
+  baseline; candidate artifact/example verification is recorded with the package
+  audit in [PR #1](https://github.com/rustcommons/glibc-provider/pull/1).
+- `cargo +1.90.0 run --release --locked --offline -p glibc-provider-collector
+  --bin glibc-provider-pack -- --check` passed: 9,830 entries, 4,747,631 compressed
+  bytes, decoded contents equal `data/`. No pack regeneration or collector/replay
+  qualification was run locally.
+- The official registry 0.1.0 archive SHA-256 matches its API checksum:
+  `62eb50dd168d92ce36af896177c886c7889b1f62f5f09d07d64bedff74dac04e`.
+  All 13 protected package files (excluding README, Cargo and VCS metadata) match
+  this checkout byte for byte. Git diff against `v0.1.0` is empty for `src/`,
+  `data/`, `pack/`, `qualification/`, `collector/`, `LICENSES/`, `NOTICE.md`,
+  `REUSE.toml` and `tests/`. No API/source-comment, input, tolerance or license
+  change is hidden by the documentation release.
+- GitHub Markdown rendering, local link/anchor and schema checks passed. The
+  shared standard now returns HTTP 200 and Contents API confirms blob
+  `1b659ff536d43bcae5b09626069e89488058ba6f` at central commit
+  `c8a0b9c01aae5657dd0ef649bd37b18d81919ce5`; the initial pending-link observation
+  is resolved. The canonical crates.io page still returns 404 although registry,
+  archive and docs.rs work; that discrepancy remains explicit below.
+
+After the final evidence commit, the package audit in PR #1 records
+`cargo +1.90.0 package -p glibc-provider-sources --locked --offline`, its verification
+build, the exact artifact checksum/size (ceiling 9,000,000 bytes), included file
+and license inventory, VCS identity, payload comparison and compilation/execution
+of the packaged README example on Rust 1.90.0. It identifies the exact candidate
+commit; branch package VCS metadata must not be mistaken for the later merge commit.
+
+Independent reviewer GO and parent normal merge approval are still required.
+After merge the coordinator must publish exactly the reviewed merged commit, then
+verify `v0.1.1` points to that released commit, the official archive checksum/contents
+and corrected README, and versioned docs.rs success. No tag, publication or registry
+success is claimed in this preparation record.
 
 ## Historical decision and scope (2026-10-31)
 
