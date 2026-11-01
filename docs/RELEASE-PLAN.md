@@ -1,10 +1,43 @@
-# Next-release plan
+# Release preparation and historical plan
 
-Date: 2026-10-31. Planning only; no version bump, publication, release, or new
-compatibility claim is authorized by this document. Recheck live versions and
-consumer revisions before executing it. External consumers are unknown, not absent.
+Updated: 2026-11-01. The maintainer authorized preparation of documentation-only
+`glibc-provider-sources` 0.1.1 to deliver the packaged README corrections below.
+This document records preparation, not publication or new compatibility claims.
+Only the coordinator publishes, after independent review and normal merge approval.
+External consumers are unknown, not absent.
 
-## Decision and scope
+## 0.1.1 documentation release candidate
+
+PR [#1](https://github.com/rustcommons/glibc-provider/pull/1), branch
+`docs/requirements-audit`, also carries the documentation audit and GP-REQ index.
+The release changes the published library version and its workspace lock entry
+from 0.1.0 to 0.1.1. The unpublished collector stays 0.1.0; its unversioned local
+path dependency needs no minimum change. No dependencies, API, behavior, source
+blobs, tables, pack, accepted differences or licenses change. The pre-existing
+manifest comment referring to AGENTS instead of the shim is a documentation-only
+change since official 0.1.0, not a package policy change.
+
+The packaged README now identifies a published library, provides Rust 1.90
+prerequisites and a complete non-writing example, and uses absolute GitHub guide
+links because `docs/` is excluded from the crate. Collector regeneration commands
+and the real pinned-hash prerequisite live in the corrected maintenance guide,
+not as invalid README shell commands. This repairs actual 0.1.0 package defects;
+trace navigation alone is not the reason for release.
+
+The exported API and embedded inputs must match the official registry 0.1.0
+archive byte for byte. Existing downstream 0.1.0 locks need no update for this
+documentation-only release. Do not trigger linux-abi-tools or cargo-libc releases
+for guide links. No collector regeneration or broad replay matrix is needed for
+unchanged inputs; the prebuilt legal gate and deferred Tier 3 remain unchanged.
+
+Candidate-specific validation and source/package proof are recorded here when
+executed. Until then the historical baseline evidence below is not candidate
+evidence. After merge the coordinator must publish exactly the reviewed merged
+commit, then verify `v0.1.1` points to that released commit, the official archive
+checksum/contents and corrected README, and versioned docs.rs success. No tag,
+publication or registry success is claimed in this preparation record.
+
+## Historical decision and scope (2026-10-31)
 
 Repository documentation cleanup does not by itself justify a release. Keep
 `glibc-provider-sources` at 0.1.0 until there is an approved packaged change.
@@ -41,7 +74,8 @@ unusable shell hash placeholder. The current Git [README](../README.md) and
 `src/lib.rs` is byte-identical to the audited baseline; no API misinformation
 was identified in this inspection. Correcting the distributed README requires
 an approved new package version; adding repository trace links alone does not
-justify one. No version or release is proposed by this audit.
+justify one. The initial audit proposed no version; the subsequent maintainer
+instruction authorized the 0.1.1 preparation above for these real package defects.
 
 ## Historical baseline and evidence (2026-10-31)
 

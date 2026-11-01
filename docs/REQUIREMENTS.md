@@ -34,7 +34,7 @@ baseline evidence, not new executions for this documentation change.
 | GP-REQ-013 | Prebuilt distribution requires legal review before any binary data enters the public repo; [ROADMAP](ROADMAP.md#data-crates). | Sources-only distribution; proposed `glibc-provider-binaries` has no approved implementation. | 2026-11-01 inspection of roadmap legal gate and package contents policy. | Planned; legal gate unchanged, no binary distribution authorized. |
 | GP-REQ-014 | Tier 3 old-system qualification remains deferred; [roadmap](ROADMAP.md#deferred-qualification) and downstream validation record. | Downstream qualification work, separate from object replay. | Coordinator scope confirmed 2026-11-01; no new old-system runs in this audit. | Deferred; not a routine maintenance blocker and not an implied compatibility claim. |
 | GP-REQ-015 | README provides purpose, prerequisites, setup and guide links; immutable package docs require separate approved release to change; [release plan](RELEASE-PLAN.md#what-reaches-consumers). | [README](../README.md), maintained guides, versioned API docs. | Previous maintenance record supplied for baseline `7f3a5d6`: README example compiled with Rust 1.90; not repeated here. Baseline CI tests API doctest. Registry archive inspected 2026-11-01; API source matches checkout. | Implemented—partial verification; published 0.1.0 README has real stale status/commands/links recorded in the release plan. Git fixes do not replace it. |
-| GP-REQ-016 | Validate affected docs and preserve release/provenance boundaries; publication needs explicit approval; [AGENTS](../AGENTS.md#validation), [release plan](RELEASE-PLAN.md#gates-for-an-authorized-release). | [CI](../.github/workflows/ci.yml), maintenance/release checklists and this stable trace index. | 2026-11-01 source/CLI-option inspection; PR records link, Markdown rendering and diff checks. No Rust examples/source changed; unrelated Rust tests/data jobs not run locally. | Implemented—partial verification; shared conventions link awaits central merge and final cross-repo link review. |
+| GP-REQ-016 | Validate affected docs and preserve release/provenance boundaries; publication needs explicit approval; [AGENTS](../AGENTS.md#validation), [release plan](RELEASE-PLAN.md#gates-for-an-authorized-release). | [CI](../.github/workflows/ci.yml), maintenance/release checklists and this stable trace index. | 2026-11-01 source/CLI-option inspection; PR records link, Markdown rendering and diff checks. No Rust examples/source changed; unrelated Rust tests/data jobs not run locally. | Implemented—partial verification; shared conventions Contents API verified live on 2026-11-01 at central commit `c8a0b9c01aae5657dd0ef649bd37b18d81919ce5`; release-specific checks are recorded in the release plan. |
 
 ## Documentation map
 
@@ -55,8 +55,11 @@ baseline evidence, not new executions for this documentation change.
 ## Maintenance
 
 Follow the [shared documentation conventions](https://github.com/rustcommons/.github/blob/main/docs/DOCUMENTATION.md)
-and the primary AGENTS rules. The shared URL is pending central merge as of this
-audit; verify it and cross-repo links before merge. Keep existing guide paths.
+and the primary AGENTS rules. The initial audit saw a 404 for the shared URL;
+on 2026-11-01 the Contents API confirmed the live file (blob
+`1b659ff536d43bcae5b09626069e89488058ba6f`) after central commit
+[`c8a0b9c`](https://github.com/rustcommons/.github/commit/c8a0b9c01aae5657dd0ef649bd37b18d81919ce5).
+The shared-link dependency is resolved. Keep existing guide paths.
 
 Update affected rows and guides together. Preserve GP-REQ IDs, add without
 renumbering/reuse, and retain dated evidence instead of silently replacing old
@@ -64,4 +67,8 @@ outcomes. New evidence must identify the exact revision, command/test/CI run and
 scope. Source inspection, test presence, object replay and downstream system
 qualification are different evidence. Recheck live registry state for an actual
 release; this audit does not authorize publication or treat trace links as a
-reason to publish. No existing feature IDs were replaced by this index.
+reason to publish. Subsequent maintainer authorization covers preparation of
+documentation-only 0.1.1 for actual packaged README defects; publication remains
+with the coordinator after review and merge approval. See the
+[release candidate record](RELEASE-PLAN.md#011-documentation-release-candidate).
+No existing feature IDs were replaced by this index.
