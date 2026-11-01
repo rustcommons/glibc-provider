@@ -46,6 +46,7 @@ in the [replay guide](https://github.com/rustcommons/glibc-provider/blob/main/do
 - [Reading and extracting data](https://github.com/rustcommons/glibc-provider/blob/main/docs/DATA.md#using-the-library), plus the [API reference](https://docs.rs/glibc-provider-sources).
 - [Rebuilding and comparing objects](https://github.com/rustcommons/glibc-provider/blob/main/docs/REPLAY.md).
 - [Collecting, regenerating, and validating data](https://github.com/rustcommons/glibc-provider/blob/main/docs/MAINTAINING.md).
+- [Requirements and documentation map](https://github.com/rustcommons/glibc-provider/blob/main/docs/REQUIREMENTS.md).
 - [Release plan](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASE-PLAN.md) and [roadmap](https://github.com/rustcommons/glibc-provider/blob/main/docs/ROADMAP.md).
 
 ## Provenance and licenses

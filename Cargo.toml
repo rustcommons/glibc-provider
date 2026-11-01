@@ -1,6 +1,6 @@
 [package]
 name = "glibc-provider-sources"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.90"
 description = "The exact glibc sources, compile commands and headers behind cargo-libc's link providers (x86_64, glibc 2.17-2.44), for building them locally"

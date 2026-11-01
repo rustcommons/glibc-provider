@@ -88,6 +88,8 @@ Results:
 
 ## Results (2026-10-11)
 
+Historical local results; not a new qualification run.
+
 Local: WSL Ubuntu 24.04, GNU binutils 2.42.
 
 | Compiler | Objects (28 releases) | identical-bytes | equivalent | accepted | differs | build-failed |
@@ -95,7 +97,7 @@ Local: WSL Ubuntu 24.04, GNU binutils 2.42.
 | GCC 13.3 (Ubuntu) | 491 | 374 | 112 | 5 | 0 | 0 |
 | Clang 18.1.3 (Ubuntu) | 507 rows | 136 | 104 | 0 | 49 | 218 |
 
-**GCC** reproduces every release:
+**GCC 13.3 in this recorded run** reproduced every release:
 - 2.37–2.44 are byte-identical throughout;
 - the equivalent objects differ only in instruction selection and relocation
   encodings;
@@ -125,6 +127,8 @@ GCC. The full reasoning, including what goes wrong with Clang, is in
 
 ## GCC versions (CI, 2026-10-12)
 
+Historical CI results; exact versions and counts belong to the linked run.
+
 The [Replay workflow](../.github/workflows/replay.yml) rebuilds all 28 releases with
 each compiler below on every push and weekly, and compares them with the recorded
 interfaces ([run 38191162456](https://github.com/rustcommons/glibc-provider/actions/runs/38191162456)). Upstream GCC comes from the official `gcc`
@@ -143,7 +147,7 @@ own packages, with its defaults.
 | GCC 15.3.1 (Fedora 43) | 2.45.1 | 365 | 121 | 5 | 0 | 0 |
 | GCC 16.2.0 | 2.44 | 366 | 120 | 5 | 0 | 0 |
 
-Every version reproduces every release.
+Every listed configuration reproduced every release in that recorded run.
 - From GCC 14, `crt1.o` of 2.37–2.44 is equivalent rather than byte-identical
   (instruction selection).
 - Fedora 43 also gives an equivalent 2.44 `static-reloc.o`.
@@ -162,6 +166,13 @@ Build failures per release (Clang 18):
 | 2.35–2.42 | 3 |
 | 2.43–2.44 | none |
 
+The workflow uses floating image tags; the versions and counts above describe
+that run, not every future image. For the audited baseline, Replay
+[run 41238038853](https://github.com/rustcommons/glibc-provider/actions/runs/41238038853)
+succeeded at `7f3a5d6115f04ce80bfef2115fc42b9230202a0d` on 2026-10-31.
+This documentation audit did not rerun replay or extract new compiler counts.
+See the [trace index](REQUIREMENTS.md) for bounded evidence and gaps.
+
 ## Not yet covered
 
 - **Other GCC versions:** GCC older than 11 and versions not listed above are not
@@ -169,5 +180,5 @@ Build failures per release (Clang 18):
   not a version difference.
 - **Full suites:** the object comparison is necessary but not sufficient. The
   replayed provider must also pass linux-abi-tools' application, exhaustive-link and
-  Cargo suites, as every release does in its provider workflow
+  Cargo suites required by its provider workflow
   ([delivery modes per release](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/PROVIDERS.md#delivery-modes-per-release)).

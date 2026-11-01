@@ -1,10 +1,87 @@
-# Next-release plan
+# Release preparation and historical plan
 
-Date: 2026-10-31. Planning only; no version bump, publication, release, or new
-compatibility claim is authorized by this document. Recheck live versions and
-consumer revisions before executing it. External consumers are unknown, not absent.
+Updated: 2026-11-01. The maintainer authorized preparation of documentation-only
+`glibc-provider-sources` 0.1.1 to deliver the packaged README corrections below.
+This document records preparation, not publication or new compatibility claims.
+Only the coordinator publishes, after independent review and normal merge approval.
+External consumers are unknown, not absent.
 
-## Decision and scope
+## 0.1.1 documentation release candidate
+
+PR [#1](https://github.com/rustcommons/glibc-provider/pull/1), branch
+`docs/requirements-audit`, also carries the documentation audit and GP-REQ index.
+The release changes the published library version and its workspace lock entry
+from 0.1.0 to 0.1.1. The unpublished collector stays 0.1.0; its unversioned local
+path dependency needs no minimum change. No dependencies, API, behavior, source
+blobs, tables, pack, accepted differences or licenses change. The pre-existing
+manifest comment referring to AGENTS instead of the shim is a documentation-only
+change since official 0.1.0, not a package policy change.
+
+The packaged README now identifies a published library, provides Rust 1.90
+prerequisites and a complete non-writing example, and uses absolute GitHub guide
+links because `docs/` is excluded from the crate. Collector regeneration commands
+and the real pinned-hash prerequisite live in the corrected maintenance guide,
+not as invalid README shell commands. This repairs actual 0.1.0 package defects;
+trace navigation alone is not the reason for release.
+
+The exported API and embedded inputs must match the official registry 0.1.0
+archive byte for byte. Existing downstream 0.1.0 locks need no update for this
+documentation-only release. Do not trigger linux-abi-tools or cargo-libc releases
+for guide links. No collector regeneration or broad replay matrix is needed for
+unchanged inputs; the prebuilt legal gate and deferred Tier 3 remain unchanged.
+
+### Candidate validation (2026-11-01)
+
+The code/package-input revision checked locally is
+[`8fda7f4`](https://github.com/rustcommons/glibc-provider/commit/8fda7f4edbb5c97fb267f82d2d8dbd71d39d221d).
+Subsequent evidence edits affect only excluded `docs/` records. Environment:
+aarch64 Linux, at most two Cargo build jobs; this is not x86_64 object replay.
+
+- Rust 1.90.0 (`1159e78c4`): `cargo +1.90.0 fmt --all -- --check` and
+  `cargo +1.90.0 test --workspace --locked --offline` passed: 28 unit/integration
+  tests and one API doctest. These test scopes do not certify all host systems.
+- Clippy 1.90.0 with `--workspace --all-targets --locked --offline -- -D warnings`
+  failed on the existing `nonminimal_bool` expression at `collector/src/main.rs:133`.
+  That source is identical to official 0.1.0 and was not changed or suppressed.
+  The required Clippy gate passed with CI's pinned Rust 1.99.0 (`b940084d7`):
+  `cargo +1.99.0 clippy --workspace --all-targets --locked --offline -- -D warnings`.
+  MSRV compilation/tests and CI-version lint policy are distinct checks.
+- `RUSTDOCFLAGS='-D warnings' cargo +1.90.0 doc --no-deps --workspace --locked --offline`
+  passed. API source and README Rust code blocks are unchanged from the audited
+  baseline; candidate artifact/example verification is recorded with the package
+  audit in [PR #1](https://github.com/rustcommons/glibc-provider/pull/1).
+- `cargo +1.90.0 run --release --locked --offline -p glibc-provider-collector
+  --bin glibc-provider-pack -- --check` passed: 9,830 entries, 4,747,631 compressed
+  bytes, decoded contents equal `data/`. No pack regeneration or collector/replay
+  qualification was run locally.
+- The official registry 0.1.0 archive SHA-256 matches its API checksum:
+  `62eb50dd168d92ce36af896177c886c7889b1f62f5f09d07d64bedff74dac04e`.
+  All 13 protected package files (excluding README, Cargo and VCS metadata) match
+  this checkout byte for byte. Git diff against `v0.1.0` is empty for `src/`,
+  `data/`, `pack/`, `qualification/`, `collector/`, `LICENSES/`, `NOTICE.md`,
+  `REUSE.toml` and `tests/`. No API/source-comment, input, tolerance or license
+  change is hidden by the documentation release.
+- GitHub Markdown rendering, local link/anchor and schema checks passed. The
+  shared standard now returns HTTP 200 and Contents API confirms blob
+  `1b659ff536d43bcae5b09626069e89488058ba6f` at central commit
+  `c8a0b9c01aae5657dd0ef649bd37b18d81919ce5`; the initial pending-link observation
+  is resolved. The canonical crates.io page still returns 404 although registry,
+  archive and docs.rs work; that discrepancy remains explicit below.
+
+After the final evidence commit, the package audit in PR #1 records
+`cargo +1.90.0 package -p glibc-provider-sources --locked --offline`, its verification
+build, the exact artifact checksum/size (ceiling 9,000,000 bytes), included file
+and license inventory, VCS identity, payload comparison and compilation/execution
+of the packaged README example on Rust 1.90.0. It identifies the exact candidate
+commit; branch package VCS metadata must not be mistaken for the later merge commit.
+
+Independent reviewer GO and parent normal merge approval are still required.
+After merge the coordinator must publish exactly the reviewed merged commit, then
+verify `v0.1.1` points to that released commit, the official archive checksum/contents
+and corrected README, and versioned docs.rs success. No tag, publication or registry
+success is claimed in this preparation record.
+
+## Historical decision and scope (2026-10-31)
 
 Repository documentation cleanup does not by itself justify a release. Keep
 `glibc-provider-sources` at 0.1.0 until there is an approved packaged change.
@@ -21,7 +98,30 @@ The unpublished MIT collector remains a workspace tool, not a second public
 release. `glibc-provider-binaries` remains blocked on the legal review described
 in [ROADMAP.md](ROADMAP.md); do not add its binary data ahead of that review.
 
-## Verified baseline and evidence
+## Current documentation status (2026-11-01)
+
+The [requirements index](REQUIREMENTS.md) is the current map of contracts,
+documentation and bounded evidence. Registry APIs inspected on 2026-11-01 report
+`glibc-provider-sources` 0.1.0, `glibc-abilists` 0.1.1, all five linux-abi-tools
+packages 0.3.3 and cargo-libc 0.2.2. The completed downstream releases are recorded
+at [linux-abi-tools v0.3.3](https://github.com/rustcommons/linux-abi-tools/tree/v0.3.3)
+and [cargo-libc v0.2.2](https://github.com/rustcommons/cargo-libc/tree/v0.2.2).
+Do not repeat them. See the downstream [release procedure](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/RELEASING.md)
+for future authorized work. The older version and dependency observations below
+remain historical evidence, not current rollout instructions.
+
+Inspection of the registry's immutable 0.1.0 archive on 2026-11-01 found actual
+packaged README defects: it says the crate is not published, links relatively to
+excluded `docs/` files, and shows collector commands without `--bin` and with an
+unusable shell hash placeholder. The current Git [README](../README.md) and
+[maintenance guide](MAINTAINING.md) correct those instructions. Packaged
+`src/lib.rs` is byte-identical to the audited baseline; no API misinformation
+was identified in this inspection. Correcting the distributed README requires
+an approved new package version; adding repository trace links alone does not
+justify one. The initial audit proposed no version; the subsequent maintainer
+instruction authorized the 0.1.1 preparation above for these real package defects.
+
+## Historical baseline and evidence (2026-10-31)
 
 Queried GitHub manifests, locks, tags, workflows, and crates.io on 2026-10-31.
 The registry versions below are non-yanked; all older versions returned by these
@@ -74,7 +174,7 @@ Check README links as rendered on GitHub and crates.io; excluded guides must
 remain reachable through repository URLs. Updating an already linked GitHub
 guide can help readers immediately without republishing the crate.
 
-## First-party dependency and artifact map
+## Historical first-party dependency and artifact map (2026-10-31)
 
 Snapshot sources: linux-abi-tools
 [manifest](https://github.com/rustcommons/linux-abi-tools/blob/6c67fa61481a516edd020291085457a1b864be4a/Cargo.toml)
@@ -108,7 +208,7 @@ These snapshots do not include other agents' uncommitted work.
   their inputs change; do not assume an existing cache updates itself.
 
 The linux-abi-tools repository publishes **five** packages (all manifests and
-workspace lock currently 0.3.1):
+workspace lock at that snapshot 0.3.1):
 
 | Package | Internal dependencies | Publish prerequisite |
 | --- | --- | --- |

@@ -119,6 +119,8 @@ them.
 
 ## Measured totals (2026-10-11)
 
+Historical measurements; not remeasured by the 2026-11-01 documentation audit.
+
 | | Count |
 | --- | --- |
 | Releases | 28 (2.17 through 2.44) |
@@ -152,6 +154,10 @@ compiled into the `glibc-provider-sources` crate.
   every file a release's tables name must be present with that hash and size, and
   every path must be relative with no `..`. `glibc-provider-pack --check` requires the
   pack to equal `data/` exactly.
+
+Pack snapshot after `libraries.tsv` was added (recorded in the baseline
+[`7f3a5d6`](https://github.com/rustcommons/glibc-provider/tree/7f3a5d6115f04ce80bfef2115fc42b9230202a0d));
+these measurements are distinct from the earlier totals above.
 
 | | Bytes |
 | --- | ---: |
