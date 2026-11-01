@@ -1,12 +1,67 @@
 # Release preparation and historical plan
 
-Updated: 2026-11-01. The maintainer authorized preparation of documentation-only
-`glibc-provider-sources` 0.1.1 to deliver the packaged README corrections below.
-This document records preparation, not publication or new compatibility claims.
-Only the coordinator publishes, after independent review and normal merge approval.
-External consumers are unknown, not absent.
+Updated: 2026-11-01. `glibc-provider-sources` **0.1.1 is published**, non-yanked
+at inspection, and delivers the README corrections. No API, behavior, input,
+compiler-qualification or license scope changed. External consumers remain unknown.
+
+## 0.1.1 published release (2026-11-01)
+
+- Released commit: [`2a7a0fa`](https://github.com/rustcommons/glibc-provider/commit/2a7a0fafce50b8516208a89c98f7b5023b77ecbf),
+  the normal merge of [PR #1](https://github.com/rustcommons/glibc-provider/pull/1).
+  The approved reviewed commits are preserved. Annotated
+  [`v0.1.1`](https://github.com/rustcommons/glibc-provider/tree/v0.1.1) peels exactly
+  to that commit (tag object `d6d2c85d98b4311683ec6b5bebb1f2c347bfaef7`).
+- The coordinator published; the [registry version API](https://crates.io/api/v1/crates/glibc-provider-sources/0.1.1)
+  records publication at `2026-11-01T04:38:44.852582Z`, non-yanked when checked.
+  Official archive SHA-256:
+  `da10605d1cab20eb0ab8cf7ebe19b619737618578dc8c74e6c62a57e1a7ec440`;
+  size **4,770,985 bytes**, below the 9,000,000-byte gate, with **18 files**.
+  Its checksum matches the registry. The coordinator independently audited the
+  official archive at `2026-11-01T04:39:30.8213138Z` with the same checksum,
+  released commit, non-yanked status and file count.
+- Official `.cargo_vcs_info.json` identifies the exact release commit, root
+  repository path and no dirty marker. All 18 extracted file contents match the
+  clean merged package verified with Rust 1.90.0. The local archive checksum
+  `11c9bc523ee7a0d0066ba13d836552d82880227d475c424260c675afb2267e4b`
+  and size 4,770,999 bytes differ from the published archive's container bytes;
+  extracted file equality, rather than archive-byte equality, was verified.
+- All **13 protected payload files** match official 0.1.0 byte for byte: Rust
+  modules/decoder fixture, source pack, accepted differences, NOTICE and five
+  license texts. Both manifest semantic comparisons differ only in library
+  version; the lock change is also only the library version. No API/source,
+  source blob/table, collector, replay tolerance or license change was made.
+  The same 18-file include inventory excludes raw data, collector, tests and guides.
+- [docs.rs build #5104129](https://docs.rs/crate/glibc-provider-sources/0.1.1/builds/5104129)
+  completed at `2026-11-01 04:39:14` using rustc
+  `1.101.0-nightly (f9ceb4a4d 2026-10-31)`. The log records generated
+  x86_64-unknown-linux-gnu docs, and the [versioned API](https://docs.rs/glibc-provider-sources/0.1.1/glibc_provider_sources/)
+  returns 200 with the public items. This is documentation-build evidence, not
+  new runtime or replay qualification.
+- The actual [crates.io 0.1.1 README](https://crates.io/crates/glibc-provider-sources/0.1.1)
+  and [docs.rs package README](https://docs.rs/crate/glibc-provider-sources/0.1.1)
+  were inspected in a browser. The library now says “This repository publishes”,
+  with Rust 1.90 prerequisites and the complete example. “Not yet published”, the
+  obsolete collector command and invalid hash placeholder are absent. All guide
+  links rendered as absolute GitHub URLs; DATA, REPLAY, MAINTAINING, REQUIREMENTS,
+  RELEASE-PLAN, ROADMAP and NOTICE links returned 200, including DATA's extraction
+  anchor. The official archive README equals the corrected released README.
+- The earlier direct-HTTP crates.io 404 observation is historical: a direct fetch
+  still returned 404 during this check, but the real browser successfully loaded
+  the versioned registry page and rendered the corrected README. It is not a
+  missing-publication or current reader-rendering gap.
+
+Current registry inspection and coordinator evidence also confirm
+`glibc-abilists` 0.1.2, the five linux-abi-tools packages 0.3.3 and cargo-libc 0.2.2.
+No downstream lock refresh or additional release is needed for this documentation
+patch. Published 0.1.0 remains an immutable historical snapshot with its original
+README defects; 0.1.1 delivers the corrections now. Prebuilt compiled provider
+objects remain Deferred pending legal review; Tier 3 remains deferred and is not
+a routine blocker. The exact Rust/MSRV/Clippy and baseline replay evidence below
+retain their original bounds; no fresh local replay qualification is claimed.
 
 ## 0.1.1 documentation release candidate
+
+Historical preparation record, completed by the published release above.
 
 PR [#1](https://github.com/rustcommons/glibc-provider/pull/1), branch
 `docs/requirements-audit`, also carries the documentation audit and GP-REQ index.
@@ -75,11 +130,10 @@ and license inventory, VCS identity, payload comparison and compilation/executio
 of the packaged README example on Rust 1.90.0. It identifies the exact candidate
 commit; branch package VCS metadata must not be mistaken for the later merge commit.
 
-Independent reviewer GO and parent normal merge approval are still required.
-After merge the coordinator must publish exactly the reviewed merged commit, then
-verify `v0.1.1` points to that released commit, the official archive checksum/contents
-and corrected README, and versioned docs.rs success. No tag, publication or registry
-success is claimed in this preparation record.
+At this preparation checkpoint, independent reviewer GO and parent normal merge
+approval were still required, followed by coordinator publication and verification.
+Those steps are completed in the published release record above; this historical
+checkpoint alone was not publication evidence.
 
 ## Historical decision and scope (2026-10-31)
 
@@ -98,10 +152,11 @@ The unpublished MIT collector remains a workspace tool, not a second public
 release. `glibc-provider-binaries` remains blocked on the legal review described
 in [ROADMAP.md](ROADMAP.md); do not add its binary data ahead of that review.
 
-## Current documentation status (2026-11-01)
+## Pre-publication documentation inspection (2026-11-01)
 
 The [requirements index](REQUIREMENTS.md) is the current map of contracts,
-documentation and bounded evidence. Registry APIs inspected on 2026-11-01 report
+documentation and bounded evidence. Before the documentation releases, registry
+APIs inspected on 2026-11-01 reported
 `glibc-provider-sources` 0.1.0, `glibc-abilists` 0.1.1, all five linux-abi-tools
 packages 0.3.3 and cargo-libc 0.2.2. The completed downstream releases are recorded
 at [linux-abi-tools v0.3.3](https://github.com/rustcommons/linux-abi-tools/tree/v0.3.3)

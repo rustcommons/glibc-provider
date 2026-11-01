@@ -7,8 +7,8 @@ The [next-release plan](RELEASE-PLAN.md) separates repository documentation
 cleanup from changes that need a new crate publication. The README and
 [maintenance guide](MAINTAINING.md) cleanup is complete in Git; see the plan for
 remaining release gates. Trace links alone do not imply a release. The separately
-authorized documentation-only 0.1.1 candidate repairs real packaged README
-defects; see its [preparation record](RELEASE-PLAN.md#011-documentation-release-candidate).
+authorized documentation-only 0.1.1 release is published and repairs the packaged
+README defects; see its [release record](RELEASE-PLAN.md#011-published-release-2026-11-01).
 
 ## Data crates
 
