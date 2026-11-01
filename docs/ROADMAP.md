@@ -17,3 +17,11 @@ remaining release gates. No new crate release is implied.
   `glibc-provider-sources` has: an overview with a doc-test example, every public item
   documented under `#![warn(missing_docs)]`, docs.rs metadata and a docs.rs badge;
   after its release, confirm the docs.rs build succeeded.
+
+## Deferred qualification
+
+Tier 3 old-system qualification remains deferred in the downstream
+[validation record](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/VALIDATION.md).
+It is not a routine documentation or maintenance blocker, and object replay does
+not establish that qualification. The prebuilt legal gate above is unchanged.
+See [requirements and gaps](REQUIREMENTS.md).

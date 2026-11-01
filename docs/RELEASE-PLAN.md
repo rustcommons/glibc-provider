@@ -21,7 +21,29 @@ The unpublished MIT collector remains a workspace tool, not a second public
 release. `glibc-provider-binaries` remains blocked on the legal review described
 in [ROADMAP.md](ROADMAP.md); do not add its binary data ahead of that review.
 
-## Verified baseline and evidence
+## Current documentation status (2026-11-01)
+
+The [requirements index](REQUIREMENTS.md) is the current map of contracts,
+documentation and bounded evidence. Registry APIs inspected on 2026-11-01 report
+`glibc-provider-sources` 0.1.0, `glibc-abilists` 0.1.1, all five linux-abi-tools
+packages 0.3.3 and cargo-libc 0.2.2. The completed downstream releases are recorded
+at [linux-abi-tools v0.3.3](https://github.com/rustcommons/linux-abi-tools/tree/v0.3.3)
+and [cargo-libc v0.2.2](https://github.com/rustcommons/cargo-libc/tree/v0.2.2).
+Do not repeat them. See the downstream [release procedure](https://github.com/rustcommons/linux-abi-tools/blob/main/docs/RELEASING.md)
+for future authorized work. The older version and dependency observations below
+remain historical evidence, not current rollout instructions.
+
+Inspection of the registry's immutable 0.1.0 archive on 2026-11-01 found actual
+packaged README defects: it says the crate is not published, links relatively to
+excluded `docs/` files, and shows collector commands without `--bin` and with an
+unusable shell hash placeholder. The current Git [README](../README.md) and
+[maintenance guide](MAINTAINING.md) correct those instructions. Packaged
+`src/lib.rs` is byte-identical to the audited baseline; no API misinformation
+was identified in this inspection. Correcting the distributed README requires
+an approved new package version; adding repository trace links alone does not
+justify one. No version or release is proposed by this audit.
+
+## Historical baseline and evidence (2026-10-31)
 
 Queried GitHub manifests, locks, tags, workflows, and crates.io on 2026-10-31.
 The registry versions below are non-yanked; all older versions returned by these
@@ -74,7 +96,7 @@ Check README links as rendered on GitHub and crates.io; excluded guides must
 remain reachable through repository URLs. Updating an already linked GitHub
 guide can help readers immediately without republishing the crate.
 
-## First-party dependency and artifact map
+## Historical first-party dependency and artifact map (2026-10-31)
 
 Snapshot sources: linux-abi-tools
 [manifest](https://github.com/rustcommons/linux-abi-tools/blob/6c67fa61481a516edd020291085457a1b864be4a/Cargo.toml)
@@ -108,7 +130,7 @@ These snapshots do not include other agents' uncommitted work.
   their inputs change; do not assume an existing cache updates itself.
 
 The linux-abi-tools repository publishes **five** packages (all manifests and
-workspace lock currently 0.3.1):
+workspace lock at that snapshot 0.3.1):
 
 | Package | Internal dependencies | Publish prerequisite |
 | --- | --- | --- |
