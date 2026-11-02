@@ -1,6 +1,6 @@
 # Release preparation and historical plan
 
-Updated: 2026-11-01. `glibc-provider-sources` **0.1.1 is published**, non-yanked
+Updated: 2026-11-02. `glibc-provider-sources` **0.1.1 is published**, non-yanked
 at inspection, and delivers the README corrections. No API, behavior, input,
 compiler-qualification or license scope changed. External consumers remain unknown.
 
@@ -45,15 +45,44 @@ live release text, links, exact tag and latest status afterward. Do not move tag
 or falsify GitHub publication dates. Historical versions must not replace the
 actual newest stable release as latest.
 
-As of the 2026-11-02 inspection, v0.1.0 and v0.1.1 have source tags and published
-crates, but no GitHub Release entries. Their [notes](releases/) and changelog are
-being backfilled from source/registry records. These files were absent at the
-historical tags: link to current main or the backfill documentation commit, never
-to a nonexistent changelog at an old tag. Original crate dates remain distinct
-from the documentation backfill and eventual GitHub Release publication dates.
-The package publication evidence below remains valid; documentation-release
-completion additionally requires the live GitHub entries and checker verification.
-This task creates no new package version and does not replace immutable READMEs.
+At the initial 2026-11-02 inspection, v0.1.0 and v0.1.1 had source tags and
+published crates but no GitHub Release entries. The notes and changelog were
+backfilled from source/registry records. These files were absent at the historical
+tags: link to current main or the backfill documentation commit, never to a
+nonexistent changelog at an old tag. Original crate dates remain distinct from
+the documentation backfill and GitHub Release publication dates. The initial
+registration/404 observations above are historical; completion is recorded below.
+No new package version was created and immutable READMEs were not replaced.
+
+## GitHub Release backfill completed (2026-11-02)
+
+- Reviewed bootstrap [PR #4](https://github.com/rustcommons/glibc-provider/pull/4)
+  merged normally at
+  [`a30d40e`](https://github.com/rustcommons/glibc-provider/commit/a30d40ee166d9ce08756578560cef802907c058c),
+  preserving the reviewed commits and tree. The registered workflow's
+  [bootstrap run 41387835086](https://github.com/rustcommons/glibc-provider/actions/runs/41387835086)
+  succeeded on that exact merge before either Release entry was published.
+- [v0.1.0](https://github.com/rustcommons/glibc-provider/releases/tag/v0.1.0)
+  was documented at `2026-11-02T04:20:30Z`, followed by
+  [v0.1.1](https://github.com/rustcommons/glibc-provider/releases/tag/v0.1.1)
+  at `2026-11-02T04:20:31Z`, from their committed versioned notes using existing
+  verified tags. These are GitHub documentation dates, not the original registry
+  publication dates.
+- Full local `--published` verification passed, and the workflow's
+  [full verification run 41387968372](https://github.com/rustcommons/glibc-provider/actions/runs/41387968372)
+  succeeded with `verify_published=true` on `a30d40e`. Both published bodies match
+  their committed note files exactly (after the checker's newline normalization).
+  v0.1.1 is latest; both entries are non-draft, non-prerelease and have **zero
+  uploaded assets**.
+- Original source tags are unchanged: v0.1.0 identifies
+  `1ae578cf7123399b0c710f44defab93cc2021001`; v0.1.1 identifies
+  `2a7a0fafce50b8516208a89c98f7b5023b77ecbf`. No crate publication, retagging,
+  binary distribution or new Rust/replay qualification occurred in this backfill.
+
+The bootstrap and live-note verification gap is closed for these two versions.
+Future routine merges and release completion still require the registered
+release-documentation checks. All earlier dated package/validation records retain
+their original bounds.
 
 ## 0.1.1 published release (2026-11-01)
 
