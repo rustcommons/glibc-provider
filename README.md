@@ -49,6 +49,13 @@ in the [replay guide](https://github.com/rustcommons/glibc-provider/blob/main/do
 - [Requirements and documentation map](https://github.com/rustcommons/glibc-provider/blob/main/docs/REQUIREMENTS.md).
 - [Release plan](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASE-PLAN.md) and [roadmap](https://github.com/rustcommons/glibc-provider/blob/main/docs/ROADMAP.md).
 
+## Release history
+
+See the [changelog](https://github.com/rustcommons/glibc-provider/blob/main/CHANGELOG.md),
+[GitHub Releases](https://github.com/rustcommons/glibc-provider/releases), and
+[release policy](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASE-PLAN.md#release-documentation-policy).
+The package is `glibc-provider-sources`; the repository is `glibc-provider`.
+
 ## Provenance and licenses
 
 Inputs come from linux-abi-tools' qualified provider build trees, built from
