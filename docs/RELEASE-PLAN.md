@@ -4,6 +4,37 @@ Updated: 2026-11-01. `glibc-provider-sources` **0.1.1 is published**, non-yanked
 at inspection, and delivers the README corrections. No API, behavior, input,
 compiler-qualification or license scope changed. External consumers remain unknown.
 
+## Release documentation policy
+
+For `glibc-provider-sources`, maintain the root [changelog](../CHANGELOG.md) and
+[versioned user-facing notes](releases/) alongside this qualification procedure.
+Record completed user-visible changes under Unreleased, then give each shipped
+version its original date, changes, upgrade impact, validation/limits and links.
+Future proposals stay out of shipped entries. Before publication, commit
+`docs/releases/vX.Y.Z.md` and run the release-documentation CI check in addition
+to the candidate-specific package/provenance checks below.
+
+A release is complete only when the immutable source tag, registry archive,
+GitHub Release notes, changelog, API/user docs and required verification agree.
+GitHub Releases document source and registry availability; distribution artifacts
+remain on crates.io. No standalone binaries or other new attachments are
+authorized by this policy. The prebuilt compiled-provider legal gate is unchanged.
+Publish reviewed notes from their committed file against the existing tag with
+`gh release create --verify-tag --notes-file`; use absolute links, and verify the
+live release text, links, exact tag and latest status afterward. Do not move tags
+or falsify GitHub publication dates. Historical versions must not replace the
+actual newest stable release as latest.
+
+As of the 2026-11-02 inspection, v0.1.0 and v0.1.1 have source tags and published
+crates, but no GitHub Release entries. Their [notes](releases/) and changelog are
+being backfilled from source/registry records. These files were absent at the
+historical tags: link to current main or the backfill documentation commit, never
+to a nonexistent changelog at an old tag. Original crate dates remain distinct
+from the documentation backfill and eventual GitHub Release publication dates.
+The package publication evidence below remains valid; documentation-release
+completion additionally requires the live GitHub entries and checker verification.
+This task creates no new package version and does not replace immutable READMEs.
+
 ## 0.1.1 published release (2026-11-01)
 
 - Released commit: [`2a7a0fa`](https://github.com/rustcommons/glibc-provider/commit/2a7a0fafce50b8516208a89c98f7b5023b77ecbf),
