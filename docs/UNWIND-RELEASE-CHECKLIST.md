@@ -39,6 +39,17 @@ producer/consumer/runtime configuration identity as relevant; a docs label alone
 is insufficient. If a newer-than-host glibc cannot run, record inspection/link
 results separately from the execution gap; do not claim runtime coverage.
 
+For each new glibc release, review relevant **upstream runtime unwind changes**
+against a pinned upstream revision/archive, including `misc/unwind-link.c`,
+`nptl/unwind.c`, pthread_exit/cancellation/backtrace paths, handle-local dlsym and
+SONAME selection, and target distribution configuration/patches. Record the exact
+upstream ref, reviewed diff/paths, findings and reviewer, plus any uncovered
+actual-target-runtime execution gap. This bundle contains minimal startup,
+nonshared and header inputs, not full glibc: unchanged collected files or ABI
+exports cannot establish unchanged runtime unwind behavior. Host-SDK tests are
+not old-target execution. Unavailable Tier 3 execution remains explicitly deferred
+and is not made a routine blocker; keep the actual evidence and claim bounded.
+
 ## Candidate evidence record
 
 Save an immutable record per candidate, with raw logs/artifacts and these fields.
