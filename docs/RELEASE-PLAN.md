@@ -385,6 +385,16 @@ the maintainer explicitly changes that policy.
 
 These are future release checks, not results of this documentation-only task.
 
+Changed source/header/library/compile-command bundles, pack regeneration and
+replay/compiler provenance updates also require the
+[draft downstream unwind-impact gate](UNWIND-RELEASE-CHECKLIST.md). Record exact
+producer/consumer/runtime identities, floor-specific symbol ownership and fresh
+relevant execution, including shared libraries/PyO3 and native C cleanup. No
+data-only exemption applies. The runtime decision and real candidate drivers
+are pending, so the draft must not be treated as completed qualification; docs-only
+byte-identical inputs can justify bounded evidence reuse. This does not weaken
+source/provenance, prebuilt legal or deferred Tier 3 limits.
+
 - Inspect the exact candidate diff against the last published tag, package file
   list and registry contents; identify unchanged versus regenerated data. Keep
   versions, dependency minima, lock resolutions and tag/commit identity coherent.

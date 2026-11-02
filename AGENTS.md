@@ -81,6 +81,21 @@ user's go-ahead.
 - When backfilling history, reconstruct facts from existing tags, registry records and source/evidence. Preserve original source identities, distinguish original release dates from documentation backfill dates, and state unavailable historical validation. Never fabricate checks, move tags, republish versions, or imply that repository edits change immutable published archives.
 - For an organization profile, placeholder or project with no shipped version, record release verification as not applicable until its first authorized release. Do not invent versions, features, changelog history or GitHub Releases to satisfy this convention.
 
+## Source bundle unwind-impact release gate
+
+For new/changed glibc source, header, library or compile-command bundles, pack
+regeneration, or replay/compiler provenance updates, use the repository
+[unwind-impact checklist](docs/UNWIND-RELEASE-CHECKLIST.md) with Cargo's canonical
+[draft unwinder release checklist](https://github.com/rustcommons/cargo-libc/blob/feat/llvm-executable-unwinder/docs/UNWINDER-RELEASE-CHECKLIST.md)
+([PR #14](https://github.com/rustcommons/cargo-libc/pull/14), not main).
+Record exact candidate identities and downstream runtime evidence; there is no
+data-only exemption. Byte-identical docs-only payload can justify scoped reuse.
+Runtime direction and actual producer/consumer driver commands remain pending;
+native C cleanup failures block a safe LLVM-default claim. Do not finalize this
+draft gate or qualify affected bundles without those decisions, drivers and
+relevant passing evidence or explicitly approved bounded dispositions. Preserve
+raw-source faithfulness and existing legal/prebuilt/Tier 3 boundaries.
+
 ## Git conventions
 
 **No tool attribution, anywhere.** Do not add `Co-Authored-By: Claude ...` trailers,
