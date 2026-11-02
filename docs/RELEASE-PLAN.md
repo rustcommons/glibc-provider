@@ -21,7 +21,14 @@ python3 scripts/check-release-docs.py --repo rustcommons/glibc-provider
 ```
 
 The local check needs no network. The [release-documentation workflow](../.github/workflows/release-docs.yml)
-runs it and supports manual dispatch on a candidate branch. After GitHub Release
+runs it and supports manual dispatch on a candidate branch once registered on the
+default branch. On first installation, independently review the local checker
+and syntax evidence, then use an approved normal merge to register the workflow.
+A green default-branch documentation run is mandatory before bootstrap completion
+or any GitHub Release note publication; future routine merges require the
+registered CI check. The initial candidate dispatch on 2026-11-02 returned 404
+because the workflow was absent on the default branch; no candidate CI pass is
+claimed. After GitHub Release
 backfill, run the checker with `--published` (network required) to compare all
 actual release bodies with committed notes and verify the latest stable version;
 release events verify their tag against current default-branch documentation.
