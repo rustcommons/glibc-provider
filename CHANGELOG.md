@@ -14,6 +14,11 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Documentation
 
+- Drafted a source-bundle unwind-impact release checklist with downstream native
+  C cleanup, shared-library/Python and floor/route/cache evidence gates. Runtime
+  direction and exact candidate drivers remain pending; no runtime change or new
+  bundle qualification is implied.
+
 - Added an architecture/data-flow diagram to the maintenance guide, separating
   maintainer recording, the published source-only library and local object builds.
 - Added this changelog, versioned release notes and release-documentation policy
