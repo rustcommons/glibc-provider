@@ -14,6 +14,19 @@ Future proposals stay out of shipped entries. Before publication, commit
 `docs/releases/vX.Y.Z.md` and run the release-documentation CI check in addition
 to the candidate-specific package/provenance checks below.
 
+The stdlib-only checker requires Python 3.11 or newer:
+
+```sh
+python3 scripts/check-release-docs.py --repo rustcommons/glibc-provider
+```
+
+The local check needs no network. The [release-documentation workflow](../.github/workflows/release-docs.yml)
+runs it and supports manual dispatch on a candidate branch. After GitHub Release
+backfill, run the checker with `--published` (network required) to compare all
+actual release bodies with committed notes and verify the latest stable version;
+release events verify their tag against current default-branch documentation.
+That distinction lets old source tags retain their original contents.
+
 A release is complete only when the immutable source tag, registry archive,
 GitHub Release notes, changelog, API/user docs and required verification agree.
 GitHub Releases document source and registry availability; distribution artifacts

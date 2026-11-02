@@ -17,7 +17,8 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 - Added an architecture/data-flow diagram to the maintenance guide, separating
   maintainer recording, the published source-only library and local object builds.
 - Added this changelog, versioned release notes and release-documentation policy
-  navigation. These repository edits do not replace either published archive.
+  navigation, plus a stdlib-only release-documentation checker and dedicated CI
+  workflow. These repository edits do not replace either published archive.
 
 ## [0.1.1] - 2026-11-01
 
