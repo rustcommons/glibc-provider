@@ -11,8 +11,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@1.99.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@92e73e19cbfb3981e63ef478a16f95f415e634d3 # 1.99.0
         with:
           components: rustfmt, clippy
       - run: cargo fmt --all -- --check
@@ -24,14 +26,18 @@ jobs:
   msrv:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@1.90.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53 # 1.90.0
       - run: cargo test --workspace --locked --offline
   data:
     name: Every blob matches its name and every table entry has a blob
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - run: |
           set -euo pipefail
           bad=0
@@ -49,8 +55,10 @@ jobs:
     name: The crate's pack holds exactly data/, and the crate packages under the size limit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@1.99.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@92e73e19cbfb3981e63ef478a16f95f415e634d3 # 1.99.0
       - run: cargo run --release --locked --offline -p glibc-provider-collector --bin glibc-provider-pack -- --check
       - name: Package and verify glibc-provider-sources
         run: |

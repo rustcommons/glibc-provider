@@ -1,0 +1,27 @@
+# Dependency policy; this does not change bundled glibc licensing or legal gates.
+[advisories]
+db-urls = ["https://github.com/RustSec/advisory-db"]
+# Fail all unmaintained advisories and yanked versions; no exceptions currently.
+unmaintained = "all"
+yanked = "deny"
+
+[licenses]
+# Exactly the existing workspace manifest licenses; no third-party Rust deps.
+allow = [
+    "MIT",
+    "BSD-3-Clause",
+    "LGPL-2.1-or-later",
+    "GPL-2.0-only WITH Linux-syscall-note",
+    "GPL-2.0-or-later WITH Linux-syscall-note",
+    "LGPL-2.1-only WITH Linux-syscall-note",
+    "LGPL-2.1-or-later WITH Linux-syscall-note",
+]
+
+[bans]
+multiple-versions = "warn"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
