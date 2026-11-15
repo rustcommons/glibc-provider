@@ -1,5 +1,9 @@
 # glibc-provider
 
+[![CI](https://github.com/rustcommons/glibc-provider/actions/workflows/ci.yml/badge.svg)](https://github.com/rustcommons/glibc-provider/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/rustcommons/glibc-provider/badge)](https://scorecard.dev/viewer/?uri=github.com/rustcommons/glibc-provider)
+[![License](https://img.shields.io/github/license/rustcommons/glibc-provider)](https://github.com/rustcommons/glibc-provider/blob/main/NOTICE.md)
+
 Source inputs for building glibc link providers for **x86_64 Linux**.
 
 [![crates.io](https://img.shields.io/crates/v/glibc-provider-sources)](https://crates.io/crates/glibc-provider-sources)

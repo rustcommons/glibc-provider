@@ -12,6 +12,12 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
+### Security maintenance
+
+- Added pinned Actions, dependency update and security checks, Scorecard reporting,
+  and an owner-approved Trusted Publishing route for future crate releases. No
+  crate, binary, source-pack or runtime change is included.
+
 ### Documentation
 
 - Added an architecture/data-flow diagram to the maintenance guide, separating

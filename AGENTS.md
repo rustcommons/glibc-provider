@@ -81,6 +81,24 @@ user's go-ahead.
 - When backfilling history, reconstruct facts from existing tags, registry records and source/evidence. Preserve original source identities, distinguish original release dates from documentation backfill dates, and state unavailable historical validation. Never fabricate checks, move tags, republish versions, or imply that repository edits change immutable published archives.
 - For an organization profile, placeholder or project with no shipped version, record release verification as not applicable until its first authorized release. Do not invent versions, features, changelog history or GitHub Releases to satisfy this convention.
 
+## Security maintenance
+
+- Changes to main go through pull requests; never push directly to main. Preserve
+  the required `lf-only` check and protected release tags; do not bypass rulesets.
+- Pin every external GitHub Action to its full commit SHA with the version tag in
+  a trailing comment. Dependabot maintains weekly Cargo and Actions updates.
+- Keep workflow permissions read-only at the top level; grant write permissions
+  only to the job that needs them. Disable persisted checkout credentials.
+- Require green zizmor and cargo-deny checks for security workflow changes and
+  dependency updates. Explain any narrow suppression inline; do not disable gates.
+  `deny.toml` checks RustSec advisories, licenses, duplicate versions and sources;
+  its license allowlist does not grant new glibc distribution rights.
+- Scorecard publishes results on main and weekly. Trusted Publishing remains
+  gated by the `crates-io` environment owner review and protected `v*` tags;
+  configure the crate's trusted publisher before using it. Existing release
+  approval, documentation, pack/provenance, legal and Tier 3 policies still apply.
+  Do not publish, create tags, or run the publishing workflow as a CI test.
+
 ## Git conventions
 
 **No tool attribution, anywhere.** Do not add `Co-Authored-By: Claude ...` trailers,

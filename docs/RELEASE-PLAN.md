@@ -4,6 +4,26 @@ Updated: 2026-11-02. `glibc-provider-sources` **0.1.1 is published**, non-yanked
 at inspection, and delivers the README corrections. No API, behavior, input,
 compiler-qualification or license scope changed. External consumers remain unknown.
 
+## Trusted Publishing (future authorized releases)
+
+The [Trusted Publishing workflow](../.github/workflows/trusted-publishing.yml)
+adds an OIDC publication route; it does not replace the existing reviewed release
+procedure below or authorize a release. The owner must configure crates.io for
+crate `glibc-provider-sources`, repository owner `rustcommons`, repository
+`glibc-provider`, workflow `trusted-publishing.yml`, environment `crates-io`.
+The collector is unpublished and is never sent to crates.io.
+
+After candidate gates and review, an authorized new `v*` tag matching the manifest
+version triggers the workflow. The environment requires owner approval. The job
+checks release documents, packages and verifies the size limit, obtains a short-lived
+token, runs `cargo publish --locked -p glibc-provider-sources`, then compares the
+local archive SHA-256 with registry metadata and the official downloaded archive.
+Checksum mismatches fail; post-upload failures require investigation, never a
+retag or blind retry. Existing versions/tags must not be republished. GitHub notes
+and the existing postpublication checks still complete the release separately.
+The new route has not published a crate; its first authorized use remains a live
+verification gap. No binary distribution, legal gate or Tier 3 policy changes.
+
 ## Release documentation policy
 
 For `glibc-provider-sources`, maintain the root [changelog](../CHANGELOG.md) and
