@@ -1,6 +1,7 @@
 name: Release documentation
 on:
   push:
+    branches: [main]
   pull_request:
   release:
     types: [published, edited]
@@ -10,10 +11,15 @@ on:
         description: Verify all existing GitHub Release notes and the latest version
         type: boolean
         default: false
+# New commits cancel obsolete runs for the same PR, not other PRs/events.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   release-documentation:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

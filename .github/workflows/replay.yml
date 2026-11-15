@@ -6,14 +6,20 @@ name: Replay
 # users have today reproduces the objects; each job records its exact version.
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
   schedule:
     - cron: "17 5 * * 1"
+# New commits cancel obsolete runs for the same PR, not other PRs/events.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -29,6 +35,7 @@ jobs:
           name: replay
           path: target/x86_64-unknown-linux-musl/release/glibc-provider-replay
   replay:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     needs: build
     name: ${{ matrix.name }}
     strategy:
