@@ -14,6 +14,10 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Security maintenance
 
+- Reduced Dependabot version updates to monthly with two open PRs per ecosystem;
+  kept immediate advisory-driven security updates and core checks, skipped heavy
+  bot qualification jobs, and canceled superseded PR runs.
+
 - Added pinned Actions, dependency update and security checks, Scorecard reporting,
   and an owner-approved Trusted Publishing route for future crate releases. No
   crate, binary, source-pack or runtime change is included.

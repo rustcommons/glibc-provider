@@ -86,7 +86,13 @@ user's go-ahead.
 - Changes to main go through pull requests; never push directly to main. Preserve
   the required `lf-only` check and protected release tags; do not bypass rulesets.
 - Pin every external GitHub Action to its full commit SHA with the version tag in
-  a trailing comment. Dependabot maintains weekly Cargo and Actions updates.
+  a trailing comment. Dependabot maintains monthly Cargo and Actions version
+  updates (two open PRs per ecosystem); advisory-driven security updates remain independent.
+- Dependabot PRs run Linux fmt/clippy/tests, cargo-deny, zizmor, required
+  `lf-only` and managed CodeQL. Full OS/MSRV, data/package and replay qualification
+  run for other PRs and main; scheduled/manual replay remains available. Gate by
+  PR author so maintainer reruns stay lean. Repository PR workflows cancel obsolete
+  runs per PR; branch pushes must not duplicate PR runs.
 - Keep workflow permissions read-only at the top level; grant write permissions
   only to the job that needs them. Disable persisted checkout credentials.
 - Require green zizmor and cargo-deny checks for security workflow changes and

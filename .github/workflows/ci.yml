@@ -1,14 +1,20 @@
 name: CI
 on:
   push:
+    branches: [main]
   pull_request:
+# New commits cancel obsolete runs for the same PR, not other PRs/events.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   rust:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # Dependabot keeps one Linux core job; full OS coverage runs otherwise.
+        os: ${{ fromJSON((github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') && '["ubuntu-latest"]' || '["ubuntu-latest", "windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -20,10 +26,12 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo test --workspace --locked --offline
       - run: cargo clippy --workspace --all-targets --locked --offline -- -D warnings
-      - run: cargo doc --no-deps --locked --offline -p glibc-provider-sources
+      - if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+        run: cargo doc --no-deps --locked --offline -p glibc-provider-sources
         env:
           RUSTDOCFLAGS: -D warnings
   msrv:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -32,6 +40,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53 # 1.90.0
       - run: cargo test --workspace --locked --offline
   data:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     name: Every blob matches its name and every table entry has a blob
     runs-on: ubuntu-latest
     steps:
@@ -52,6 +61,7 @@ jobs:
           done
           exit $bad
   pack:
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     name: The crate's pack holds exactly data/, and the crate packages under the size limit
     runs-on: ubuntu-latest
     steps:
