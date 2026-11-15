@@ -13,6 +13,10 @@ updates:
         update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
+    ignore:
+      # These SHAs select deliberate Rust versions, including the 1.90 MSRV.
+      # Toolchain updates require manual review; do not replace them with latest.
+      - dependency-name: dtolnay/rust-toolchain
     schedule:
       interval: monthly
     cooldown:
