@@ -167,11 +167,38 @@ Build failures per release (Clang 18):
 | 2.43–2.44 | none |
 
 The workflow used floating image tags until 2026-11-18 and now pins each image by
-digest; the versions and counts above describe that run, not every later image. For the audited baseline, Replay
+digest ([Compiler images](#compiler-images)); the versions and counts above
+describe that run, not every later image. For the audited baseline, Replay
 [run 41238038853](https://github.com/rustcommons/glibc-provider/actions/runs/41238038853)
 succeeded at `7f3a5d6115f04ce80bfef2115fc42b9230202a0d` on 2026-10-31.
 This documentation audit did not rerun replay or extract new compiler counts.
 See the [trace index](REQUIREMENTS.md) for bounded evidence and gaps.
+
+## Compiler images
+
+The Replay matrix lives in
+[qualification/replay-images.json](../qualification/replay-images.json): each
+job's name, its image as `name:tag@sha256:<digest>`, and any install command. The
+build job refuses an image without a digest, so a run tests exactly the compiler
+recorded there.
+
+On the 3rd of each month the [Replay images workflow](../.github/workflows/replay-images.yml)
+resolves each tag's current digest on Docker Hub
+([script](../scripts/replay-image-digests.py)). A read-only job resolves; a
+separate job with write permissions commits only the changed digests to the
+`automation/replay-image-digests` branch and proposes it. It refuses any other
+change to the file and never merges. Run it by hand from the Actions tab.
+
+- If GitHub Actions may create pull requests in this repository, it opens or
+  updates a PR titled "Refresh Replay image digests". PRs opened by Actions do not
+  start other workflows: close and reopen it to run CI and Replay.
+- Otherwise (the organization's current setting), it opens or updates an issue of
+  that title with a compare link; a maintainer opens the PR from it, and CI and
+  Replay run normally.
+
+Review the Replay run before merging: the new digests may carry a different GCC
+or binutils, recorded in each job's summary. A failing compiler is a qualification
+result, not a reason to drop it; see the AGENTS rules on accepted differences.
 
 ## Not yet covered
 

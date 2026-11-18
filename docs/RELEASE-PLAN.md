@@ -429,7 +429,7 @@ These are future release checks, not results of this documentation-only task.
 - Qualify changed replay/compiler behavior or data against the Replay matrix:
   upstream GCC 12–16, Rocky 9 GCC 11, Ubuntu 24.04 GCC 13, Debian 13 GCC 14,
   Fedora 43 GCC 15. Record actual compiler/binutils versions; images are digest-pinned and
-  refreshed by hand.
+  refreshed by reviewed monthly proposals ([REPLAY](REPLAY.md#compiler-images)).
   A documented old run is not evidence that a new candidate passed.
 - For changed provider output, coordinate linux-abi-tools' application,
   exhaustive-link and Cargo suites using the candidate data and a pinned

@@ -1,0 +1,11 @@
+[
+  {"name": "GCC 12", "image": "gcc:12@sha256:3d3af69c72edf0652bb3a829965142e81891899c7827d849bc3c0dbb9edd216a"},
+  {"name": "GCC 13", "image": "gcc:13@sha256:8c0fe724784c6d617cb582f79ddaf5dd2233aaba2fb7a14e0b9d03348fea8088"},
+  {"name": "GCC 14", "image": "gcc:14@sha256:a6f425a380ee03e682df3b436fc9077c544fb0fea0a9cab943c3b8320db10765"},
+  {"name": "GCC 15", "image": "gcc:15@sha256:60a0af4b79226d7cb062cc18dcb56f91b4385aace8f6d514f114c3f1af363ef1"},
+  {"name": "GCC 16", "image": "gcc:16@sha256:5c2f83335c97e233c80d2bc754bd5c46b2d9c32f236a765a4ac40a59f216c064"},
+  {"name": "Rocky Linux 9 (GCC 11)", "image": "rockylinux:9@sha256:03303863808e9cd79f0c58c833db3e5f9cde9f2abe16804a267b05dc54af86e4", "install": "dnf install -y gcc binutils"},
+  {"name": "Ubuntu 24.04 (GCC 13)", "image": "ubuntu:24.04@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8", "install": "apt-get update && apt-get install -y gcc binutils"},
+  {"name": "Debian 13 (GCC 14)", "image": "debian:trixie@sha256:9c6e381421d0f48d1b8133e573f33c185ee16cbf505eda9c4a8a4791b25ea8a6", "install": "apt-get update && apt-get install -y gcc binutils"},
+  {"name": "Fedora 43 (GCC 15)", "image": "fedora:43@sha256:f01112b9a1f1d0504ad962d9adfa401425033f8ab067e0a821904ebdde5b8ca5", "install": "dnf install -y gcc binutils"}
+]

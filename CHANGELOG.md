@@ -26,6 +26,9 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
   digest and cargo-deny to an exact locked build. The fuzz workspace is
   unpublished and adds no dependency to the crate.
 
+- Moved the Replay images to `qualification/replay-images.json` and added a
+  monthly workflow that proposes new image digests for review, never merging them.
+
 - Reduced Dependabot version updates to monthly with two open PRs per ecosystem;
   kept immediate advisory-driven security updates and core checks, skipped heavy
   bot qualification jobs, and canceled superseded PR runs.
