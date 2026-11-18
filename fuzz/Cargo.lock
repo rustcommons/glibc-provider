@@ -53,7 +53,7 @@ dependencies = [
 
 [[package]]
 name = "glibc-provider-sources"
-version = "0.1.1"
+version = "0.1.2"
 
 [[package]]
 name = "jobserver"

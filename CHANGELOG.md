@@ -12,14 +12,17 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-18
+
 ### Fixed
 
 - **A corrupt line delta no longer panics `Sources::parse` or `Sources::from_gzip`.**
   An empty delta operation, or a count that overflowed the base or insert
-  position, now returns an error. The bundled pack was never affected. Found by
-  the new fuzz targets.
+  position, now returns an error. Only corrupt or untrusted pack input was
+  affected; the bundled pack was never affected. Found by the new fuzz targets.
+  No other API, behavior, source pack, recorded tables or license changed.
 
-### Security maintenance
+### Security maintenance (repository only; no package change)
 
 - Added cargo-fuzz targets for the gzip, pack, delta and table loaders, run by
   ClusterFuzzLite on PRs and weekly, and pinned the Replay container images by
@@ -37,13 +40,16 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
   and an owner-approved Trusted Publishing route for future crate releases. No
   crate, binary, source-pack or runtime change is included.
 
-### Documentation
+### Documentation (repository only; no package change)
 
 - Added an architecture/data-flow diagram to the maintenance guide, separating
   maintainer recording, the published source-only library and local object builds.
 - Added this changelog, versioned release notes and release-documentation policy
   navigation, plus a stdlib-only release-documentation checker and dedicated CI
   workflow. These repository edits do not replace either published archive.
+
+[Versioned notes](https://github.com/rustcommons/glibc-provider/blob/main/docs/releases/v0.1.2.md)
+identify the source tag and bounded validation evidence.
 
 ## [0.1.1] - 2026-11-01
 
