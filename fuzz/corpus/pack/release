@@ -1,0 +1,26 @@
+glibc-provider-pack 1
+8
+9.9/release.tsv	db7a10bc9a0246355c5f69971f79a1ab8ab9eb88fec5f46231c6181c48b645b0	81	81	-
+9.9/objects.tsv	7acb089e717fc271e06174d30891236e659cb618e6fcb7ea793752a02a25ee1e	82	82	-
+9.9/inputs.tsv	d913f3613597d6a69d871474e2c2fb335ed9710b70934718920ec60632f3d28b	25	25	-
+9.9/files.tsv	d3608bd8f9d38ae657ad41acf36d418be0b03267d33cb01a425e805cf6f7ea36	127	127	-
+9.9/headers.tsv	a7e26b4759eedd5fbf8e4e6edac081c6aa39aaa01b844e63942ed033d8a15358	89	89	-
+9.9/interfaces.tsv	a48e4055a24a9a0049c5d936b3fdfc0c9a6fd8a653021b7f5ec20b2371339b11	18	18	-
+9.9/libraries.tsv	26be1fce7b05eb923a69943f20bf5652465e230ccc7382004b2e2d9314eeaa68	14	14	-
+blobs/4767235cb67f169cad00d920f225a05dcf4a11b3a71b215277b2ecc879ce82f0	4767235cb67f169cad00d920f225a05dcf4a11b3a71b215277b2ecc879ce82f0	12	12	-
+key	value
+archive	glibc-9.9.tar.xz
+archive_sha256	x
+builder.gcc	1
+builder.pie	no
+target	member	object	kind	directory	command
+crti.o	0	csu/crti.o	compile	csu	gcc x
+object	class	path	sha256
+class	path	sha256	size
+archive	csu/x.h	4767235cb67f169cad00d920f225a05dcf4a11b3a71b215277b2ecc879ce82f0	12
+compiler	/usr/x.h		
+path	sha256	size
+x.h	4767235cb67f169cad00d920f225a05dcf4a11b3a71b215277b2ecc879ce82f0	12
+object	kind	value
+soname	symbol
+#define X 1

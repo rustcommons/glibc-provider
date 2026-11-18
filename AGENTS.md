@@ -53,7 +53,9 @@ after legal review, `glibc-provider-binaries`.
 ## Validation
 
 Run `cargo fmt --all -- --check`, `cargo test --workspace --locked --offline`, and
-`cargo clippy --workspace --all-targets --locked --offline -- -D warnings`. Data
+`cargo clippy --workspace --all-targets --locked --offline -- -D warnings`. Parser
+changes also need a short local fuzz run of the affected targets
+([docs/FUZZING.md](docs/FUZZING.md)). Data
 changes also require the collector's `--check` against the build trees, and
 `glibc-provider-replay --record` to re-record `interfaces.tsv`, and linux-abi-tools'
 `libc-abi glibc libraries` to re-record `libraries.tsv`; the Replay workflow
@@ -99,7 +101,21 @@ user's go-ahead.
   dependency updates. Explain any narrow suppression inline; do not disable gates.
   `deny.toml` checks RustSec advisories, licenses, duplicate versions and sources;
   its license allowlist does not grant new glibc distribution rights.
-- Scorecard publishes results on main and weekly. Trusted Publishing remains
+- Never put `[skip ci]`, `[ci skip]` or similar markers in commit or merge
+  messages: they skip CI and CodeQL, which lowers Scorecard's SAST and CI-Tests.
+  CodeQL runs as GitHub's default setup, configured by the coordinator; keep it.
+- Pin every workflow install: actions by full SHA; container images by digest
+  (with the tag and resolution date in a comment, refreshed by hand); `pip
+  install` only as `--require-hashes -r` a hashed requirements file; `cargo
+  install` only with `--locked` and an exact `--version =X.Y.Z`; no `curl | sh`
+  or download-then-run unless the file's SHA-256 is checked against a pinned value
+  first. Dependabot does not update image digests or the fuzz builder.
+- Fuzz every parser of untrusted input ([docs/FUZZING.md](docs/FUZZING.md)): the
+  unpublished `fuzz/` workspace keeps `libfuzzer-sys` out of the crate's graph.
+  Add a target when adding a parser. A fuzz crash is a bug: fix it with a
+  regression test, or report it if the fix needs a decision.
+- Scorecard publishes results on main and weekly. Trusted Publishing is the only
+  release route (the owner revoked the local crates.io token on 2026-11-16) and is
   gated by the `crates-io` environment owner review and protected `v*` tags;
   configure the crate's trusted publisher before using it. Existing release
   approval, documentation, pack/provenance, legal and Tier 3 policies still apply.

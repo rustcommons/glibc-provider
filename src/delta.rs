@@ -27,7 +27,7 @@ fn lines(data: &[u8]) -> Vec<&[u8]> {
 /// Rebuilds a file from its base and a delta.
 pub fn apply(base: &[u8], delta: &[u8]) -> Result<Vec<u8>, String> {
     let base = lines(base);
-    let mut cursor = 0;
+    let mut cursor: usize = 0;
     let mut out = Vec::new();
     let mut at = 0;
     while at < delta.len() {
@@ -37,17 +37,19 @@ pub fn apply(base: &[u8], delta: &[u8]) -> Result<Vec<u8>, String> {
                 .iter()
                 .position(|&b| b == b'\n')
                 .ok_or("delta operation ends early")?;
-        let count: usize = std::str::from_utf8(&delta[at + 1..end])
-            .ok()
+        // An empty line has no operation byte, so its count would start past `end`.
+        let count: usize = delta
+            .get(at + 1..end)
+            .and_then(|n| std::str::from_utf8(n).ok())
             .and_then(|n| n.parse().ok())
             .ok_or("invalid delta count")?;
         at = end + 1;
         match op {
             b'c' | b's' => {
-                let next = cursor + count;
-                if next > base.len() {
-                    return Err("delta reads past the base".into());
-                }
+                let next = cursor
+                    .checked_add(count)
+                    .filter(|&next| next <= base.len())
+                    .ok_or("delta reads past the base")?;
                 if op == b'c' {
                     for line in &base[cursor..next] {
                         out.extend_from_slice(line);
@@ -56,7 +58,10 @@ pub fn apply(base: &[u8], delta: &[u8]) -> Result<Vec<u8>, String> {
                 cursor = next;
             }
             b'a' => {
-                let bytes = delta.get(at..at + count).ok_or("delta insert ends early")?;
+                let bytes = at
+                    .checked_add(count)
+                    .and_then(|end| delta.get(at..end))
+                    .ok_or("delta insert ends early")?;
                 out.extend_from_slice(bytes);
                 at += count;
             }
@@ -236,6 +241,18 @@ mod tests {
     fn rejects_bad_deltas() {
         for bad in [&b"c9\n"[..], b"s1", b"a5\nab", b"x1\n", b"cz\n"] {
             assert!(apply(b"a\nb\n", bad).is_err(), "{bad:?}");
+        }
+        // Found by the `pack` fuzz target: an empty operation line, and counts
+        // that overflow the base or insert position, must be errors, not panics.
+        let max = usize::MAX;
+        for bad in [
+            b"\n".to_vec(),
+            b"c1\n\n".to_vec(),
+            format!("c1\nc{max}\n").into_bytes(),
+            format!("s1\ns{max}\n").into_bytes(),
+            format!("a{max}\nab").into_bytes(),
+        ] {
+            assert!(apply(b"a\nb\n", &bad).is_err(), "{bad:?}");
         }
     }
 }
