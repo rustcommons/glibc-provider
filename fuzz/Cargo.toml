@@ -1,0 +1,47 @@
+[package]
+name = "glibc-provider-fuzz"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.90"
+description = "Fuzz targets for glibc-provider-sources' pack, delta and table loaders"
+license = "MIT"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+# Standalone workspace: no fuzz dependency enters the published crate's graph.
+[workspace]
+members = ["."]
+
+[dependencies]
+libfuzzer-sys = "=0.4.13"
+glibc-provider-sources = { path = ".." }
+
+[[bin]]
+name = "gzip_pack"
+path = "fuzz_targets/gzip_pack.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "pack"
+path = "fuzz_targets/pack.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "tables"
+path = "fuzz_targets/tables.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "delta"
+path = "fuzz_targets/delta.rs"
+test = false
+doc = false
+bench = false

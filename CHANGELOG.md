@@ -12,7 +12,19 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
+### Fixed
+
+- **A corrupt line delta no longer panics `Sources::parse` or `Sources::from_gzip`.**
+  An empty delta operation, or a count that overflowed the base or insert
+  position, now returns an error. The bundled pack was never affected. Found by
+  the new fuzz targets.
+
 ### Security maintenance
+
+- Added cargo-fuzz targets for the gzip, pack, delta and table loaders, run by
+  ClusterFuzzLite on PRs and weekly, and pinned the Replay container images by
+  digest and cargo-deny to an exact locked build. The fuzz workspace is
+  unpublished and adds no dependency to the crate.
 
 - Reduced Dependabot version updates to monthly with two open PRs per ecosystem;
   kept immediate advisory-driven security updates and core checks, skipped heavy

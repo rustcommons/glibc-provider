@@ -35,7 +35,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
-        with:
-          rust-version: 1.90.0
-          arguments: --workspace --all-features --locked
+      - uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53 # 1.90.0
+      # Built from source at an exact version: no unverified binary download.
+      - name: Install the pinned audit tool
+        run: cargo install cargo-deny --version =0.20.2 --locked -j 2
+      - name: Audit advisories, licenses, duplicate versions and sources
+        run: cargo deny --workspace --all-features --locked check

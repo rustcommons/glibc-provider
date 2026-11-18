@@ -166,8 +166,8 @@ Build failures per release (Clang 18):
 | 2.35–2.42 | 3 |
 | 2.43–2.44 | none |
 
-The workflow uses floating image tags; the versions and counts above describe
-that run, not every future image. For the audited baseline, Replay
+The workflow used floating image tags until 2026-11-18 and now pins each image by
+digest; the versions and counts above describe that run, not every later image. For the audited baseline, Replay
 [run 41238038853](https://github.com/rustcommons/glibc-provider/actions/runs/41238038853)
 succeeded at `7f3a5d6115f04ce80bfef2115fc42b9230202a0d` on 2026-10-31.
 This documentation audit did not rerun replay or extract new compiler counts.

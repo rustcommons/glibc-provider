@@ -7,8 +7,9 @@ compiler-qualification or license scope changed. External consumers remain unkno
 ## Trusted Publishing (future authorized releases)
 
 The [Trusted Publishing workflow](../.github/workflows/trusted-publishing.yml)
-adds an OIDC publication route; it does not replace the existing reviewed release
-procedure below or authorize a release. The owner must configure crates.io for
+is the only publication route: the owner revoked the local crates.io token on
+2026-11-16, so no release is published from a maintainer machine. The workflow
+does not replace the reviewed release gates below or authorize a release. The owner must configure crates.io for
 crate `glibc-provider-sources`, repository owner `rustcommons`, repository
 `glibc-provider`, workflow `trusted-publishing.yml`, environment `crates-io`.
 The collector is unpublished and is never sent to crates.io.
@@ -427,7 +428,8 @@ These are future release checks, not results of this documentation-only task.
   exceptions; do not relicense upstream content or add binary distribution.
 - Qualify changed replay/compiler behavior or data against the Replay matrix:
   upstream GCC 12–16, Rocky 9 GCC 11, Ubuntu 24.04 GCC 13, Debian 13 GCC 14,
-  Fedora 43 GCC 15. Record actual compiler/binutils versions; tags float.
+  Fedora 43 GCC 15. Record actual compiler/binutils versions; images are digest-pinned and
+  refreshed by hand.
   A documented old run is not evidence that a new candidate passed.
 - For changed provider output, coordinate linux-abi-tools' application,
   exhaustive-link and Cargo suites using the candidate data and a pinned
