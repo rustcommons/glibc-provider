@@ -105,11 +105,13 @@ user's go-ahead.
   messages: they skip CI and CodeQL, which lowers Scorecard's SAST and CI-Tests.
   CodeQL runs as GitHub's default setup, configured by the coordinator; keep it.
 - Pin every workflow install: actions by full SHA; container images by digest
-  (with the tag and resolution date in a comment, refreshed by hand); `pip
+  with their tag (Replay images in `qualification/replay-images.json`, refreshed
+  by the monthly Replay images proposal, which must never be auto-merged); `pip
   install` only as `--require-hashes -r` a hashed requirements file; `cargo
   install` only with `--locked` and an exact `--version =X.Y.Z`; no `curl | sh`
   or download-then-run unless the file's SHA-256 is checked against a pinned value
-  first. Dependabot does not update image digests or the fuzz builder.
+  first. Dependabot does not update image digests; the fuzz builder is refreshed
+  by hand.
 - Fuzz every parser of untrusted input ([docs/FUZZING.md](docs/FUZZING.md)): the
   unpublished `fuzz/` workspace keeps `libfuzzer-sys` out of the crate's graph.
   Add a target when adding a parser. A fuzz crash is a bug: fix it with a

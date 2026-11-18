@@ -2,9 +2,9 @@ name: Replay
 # Rebuilds every release's startup objects and nonshared archives with each GCC
 # version and compares them with the recorded container build (docs/REPLAY.md).
 # A failing entry means linux-abi-tools' `source` mode must not be offered with
-# that compiler. Images are pinned by digest (resolved 2026-11-18), so a run
-# tests exactly the compiler named; refresh the digests by hand to qualify the
-# GCC users have today. Each job records its exact compiler version.
+# that compiler. Images are pinned by digest in qualification/replay-images.json,
+# so a run tests exactly the compiler named; the monthly Replay images workflow
+# proposes new digests for review. Each job records its exact compiler version.
 on:
   push:
     branches: [main]
@@ -22,10 +22,22 @@ jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.images.outputs.images }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - id: images
+        name: Read the digest-pinned compiler images
+        run: |
+          python3 - <<'PYTHON' >> "$GITHUB_OUTPUT"
+          import json, re
+          entries = json.load(open("qualification/replay-images.json"))
+          pinned = re.compile(r"[a-z0-9][a-z0-9._-]*:[A-Za-z0-9._-]+@sha256:[0-9a-f]{64}")
+          assert all(pinned.fullmatch(e["image"]) for e in entries), "unpinned image"
+          print("images=" + json.dumps(entries, separators=(",", ":")))
+          PYTHON
       - uses: dtolnay/rust-toolchain@92e73e19cbfb3981e63ef478a16f95f415e634d3 # 1.99.0
         with:
           targets: x86_64-unknown-linux-musl
@@ -42,20 +54,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # Upstream GCC releases, without distribution defaults.
-          - { name: GCC 12, image: "gcc:12@sha256:3d3af69c72edf0652bb3a829965142e81891899c7827d849bc3c0dbb9edd216a" }
-          - { name: GCC 13, image: "gcc:13@sha256:8c0fe724784c6d617cb582f79ddaf5dd2233aaba2fb7a14e0b9d03348fea8088" }
-          - { name: GCC 14, image: "gcc:14@sha256:a6f425a380ee03e682df3b436fc9077c544fb0fea0a9cab943c3b8320db10765" }
-          - { name: GCC 15, image: "gcc:15@sha256:60a0af4b79226d7cb062cc18dcb56f91b4385aace8f6d514f114c3f1af363ef1" }
-          - { name: GCC 16, image: "gcc:16@sha256:5c2f83335c97e233c80d2bc754bd5c46b2d9c32f236a765a4ac40a59f216c064" }
-          # Distribution GCC, with the defaults users actually get.
-          - { name: Rocky Linux 9 (GCC 11), image: "rockylinux:9@sha256:03303863808e9cd79f0c58c833db3e5f9cde9f2abe16804a267b05dc54af86e4", install: "dnf install -y gcc binutils" }
-          - { name: Ubuntu 24.04 (GCC 13), image: "ubuntu:24.04@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8", install: "apt-get update && apt-get install -y gcc binutils" }
-          - { name: Debian 13 (GCC 14), image: "debian:trixie@sha256:9c6e381421d0f48d1b8133e573f33c185ee16cbf505eda9c4a8a4791b25ea8a6", install: "apt-get update && apt-get install -y gcc binutils" }
-          - { name: Fedora 43 (GCC 15), image: "fedora:43@sha256:f01112b9a1f1d0504ad962d9adfa401425033f8ab067e0a821904ebdde5b8ca5", install: "dnf install -y gcc binutils" }
+        # Upstream GCC releases, then distribution GCC with the defaults users get.
+        include: ${{ fromJSON(needs.build.outputs.images) }}
     runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    # Every image is name:tag@sha256:<digest>; the build job refuses anything else.
+    container: ${{ matrix.image }} # zizmor: ignore[unpinned-images]
     steps:
       - if: matrix.install
         env:

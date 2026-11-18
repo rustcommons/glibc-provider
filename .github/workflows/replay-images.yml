@@ -1,0 +1,59 @@
+name: Replay images
+# Monthly: resolve the current digest of every Replay image tag and propose the
+# change for review, so compiler updates are visible (docs/REPLAY.md). Never merges.
+on:
+  schedule:
+    - cron: "41 6 3 * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+jobs:
+  resolve:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-24.04
+    outputs:
+      changed: ${{ steps.resolve.outputs.changed }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: resolve
+        name: Resolve the current digests (stdlib Python, no installs)
+        run: |
+          python3 -I scripts/replay-image-digests.py resolve --summary "$RUNNER_TEMP/summary.md"
+          cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p "$RUNNER_TEMP/out"
+          cp qualification/replay-images.json "$RUNNER_TEMP/summary.md" "$RUNNER_TEMP/out/"
+          if git diff --quiet; then echo changed=false; else echo changed=true; fi >> "$GITHUB_OUTPUT"
+      - if: steps.resolve.outputs.changed == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: replay-images
+          path: ${{ runner.temp }}/out/
+  propose:
+    needs: resolve
+    if: needs.resolve.outputs.changed == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Push the proposal branch.
+      pull-requests: write # Open or update the proposal PR.
+      issues: write # Fallback when Actions may not open PRs in this repository.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: replay-images
+          path: ${{ runner.temp }}/in
+      - name: Propose the digest-only change for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_SHA: ${{ github.sha }}
+        run: >-
+          python3 -I scripts/replay-image-digests.py propose
+          --resolved "$RUNNER_TEMP/in/replay-images.json"
+          --summary "$RUNNER_TEMP/in/summary.md"
