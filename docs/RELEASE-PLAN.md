@@ -1,7 +1,8 @@
 # Release preparation and historical plan
 
-Updated: 2026-11-02. `glibc-provider-sources` **0.1.1 is published**, non-yanked
-at inspection, and delivers the README corrections. No API, behavior, input,
+Updated: 2026-11-19. `glibc-provider-sources` **0.1.2 is published** through
+Trusted Publishing, non-yanked at inspection, and fixes a panic on corrupt pack
+deltas ([record](#012-published-release-2026-11-19)). No other API, input,
 compiler-qualification or license scope changed. External consumers remain unknown.
 
 ## Trusted Publishing (future authorized releases)
@@ -22,8 +23,8 @@ local archive SHA-256 with registry metadata and the official downloaded archive
 Checksum mismatches fail; post-upload failures require investigation, never a
 retag or blind retry. Existing versions/tags must not be republished. GitHub notes
 and the existing postpublication checks still complete the release separately.
-The new route has not published a crate; its first authorized use remains a live
-verification gap. No binary distribution, legal gate or Tier 3 policy changes.
+Its first authorized use published 0.1.2 on 2026-11-19
+([record](#012-published-release-2026-11-19)). No binary distribution, legal gate or Tier 3 policy changes.
 
 ## Release documentation policy
 
@@ -104,6 +105,45 @@ The bootstrap and live-note verification gap is closed for these two versions.
 Future routine merges and release completion still require the registered
 release-documentation checks. All earlier dated package/validation records retain
 their original bounds.
+
+## 0.1.2 published release (2026-11-19)
+
+- Authorized by the owner on 2026-11-17 as a patch release of the corrupt-delta
+  fix from [PR #13](https://github.com/rustcommons/glibc-provider/pull/13).
+  Released commit: [`8086dea`](https://github.com/rustcommons/glibc-provider/commit/8086dea2b469e211387dbc3c551b849971ced095),
+  the merge of [PR #15](https://github.com/rustcommons/glibc-provider/pull/15),
+  whose exact head passed every check. Main CI, including all nine Replay
+  compilers, passed on the merge before tagging. Annotated
+  [`v0.1.2`](https://github.com/rustcommons/glibc-provider/tree/v0.1.2) peels exactly
+  to that commit (tag object `b92617b8f6d512c1ab078f25c3cec349ff692574`).
+- [Trusted Publishing run 44266205937](https://github.com/rustcommons/glibc-provider/actions/runs/44266205937)
+  published after the owner approved the `crates-io` environment; its registry
+  and official-archive checksum step passed. The
+  [registry version API](https://crates.io/api/v1/crates/glibc-provider-sources/0.1.2)
+  records publication at `2026-11-19T04:09:00.740198Z`, non-yanked, `rust_version`
+  1.90, and `trustpub_data` naming repository `rustcommons/glibc-provider`, run
+  `44266205937` and commit `8086dea2b469e211387dbc3c551b849971ced095`.
+- Archive SHA-256 `9b4d1df86e7b877bcf4a6b77832466d590dd489aa2ac5a72fec51ad48edec450`,
+  **4,771,443 bytes** (below the 9,000,000-byte gate), **18 files**. The official
+  download is byte-identical to `cargo +1.99.0 package --locked` of a clean
+  checkout of the tag; `.cargo_vcs_info.json` names the released commit. The same
+  package built with Rust 1.90.0 differs in container bytes only.
+- [docs.rs build #5385082](https://docs.rs/crate/glibc-provider-sources/0.1.2/builds/5385082)
+  completed at `2026-11-19 04:09:52` with rustc `1.102.0-nightly (65ce8611f
+  2026-11-18)`; the [versioned API](https://docs.rs/glibc-provider-sources/0.1.2/glibc_provider_sources/)
+  returns 200.
+- A fresh consumer crate depending on `glibc-provider-sources = "=0.1.2"` built
+  from crates.io with Rust 1.90.0 and an empty Cargo home. It loaded the bundled
+  pack (28 releases, `glibc-2.28.tar.xz` for 2.28), and `Sources::parse` returned
+  `invalid delta count` for a pack with an empty delta line; the same program on
+  `=0.1.1` panicked in `delta.rs`.
+- The [GitHub Release](https://github.com/rustcommons/glibc-provider/releases/tag/v0.1.2)
+  was published from `docs/releases/v0.1.2.md` at `2026-11-19T04:12:36Z`, with no
+  assets, and is the latest release. `check-release-docs.py --published` passed
+  for all three versions. The changelog date was corrected from the planned
+  2026-11-18 to the registry publication date.
+- No fresh downstream linux-abi-tools or cargo-libc qualification is claimed.
+  Tier 3 remains deferred; the legal gate on prebuilt objects remains in force.
 
 ## 0.1.1 published release (2026-11-01)
 

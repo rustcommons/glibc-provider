@@ -12,7 +12,7 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
-## [0.1.2] - 2026-11-18
+## [0.1.2] - 2026-11-19
 
 ### Fixed
 
