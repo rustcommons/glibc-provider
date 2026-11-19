@@ -9,6 +9,8 @@ cleanup from changes that need a new crate publication. The README and
 remaining release gates. Trace links alone do not imply a release. The separately
 authorized documentation-only 0.1.1 release is published and repairs the packaged
 README defects; see its [release record](RELEASE-PLAN.md#011-published-release-2026-11-01).
+The authorized 0.1.2 patch release fixes a panic on corrupt pack deltas; see its
+[release record](RELEASE-PLAN.md#012-published-release-2026-11-19).
 
 ## Data crates
 
