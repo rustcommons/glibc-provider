@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         # Dependabot keeps one Linux core job; full OS coverage runs otherwise.
-        os: ${{ fromJSON((github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') && '["ubuntu-latest"]' || '["ubuntu-latest", "windows-latest"]') }}
+        os: ${{ fromJSON((github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') && '["ubuntu-24.04"]' || '["ubuntu-24.04", "windows-2025"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -32,7 +32,7 @@ jobs:
           RUSTDOCFLAGS: -D warnings
   msrv:
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -42,7 +42,7 @@ jobs:
   data:
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     name: Every blob matches its name and every table entry has a blob
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -63,7 +63,7 @@ jobs:
   pack:
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     name: The crate's pack holds exactly data/, and the crate packages under the size limit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

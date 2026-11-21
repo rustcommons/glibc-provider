@@ -12,6 +12,11 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
+### Security maintenance (repository only; no package change)
+
+- CI jobs run on explicit `ubuntu-24.04` and `windows-2025` runner images instead
+  of moving `-latest` labels; a later runner upgrade will be a deliberate change.
+
 ## [0.1.2] - 2026-11-19
 
 ### Fixed
