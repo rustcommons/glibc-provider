@@ -14,8 +14,9 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Repository
 
-- Narrowed the publish job's credentials: it repackages and compares each crate
-  with the attested file before requesting the crates.io token, which then exists
+- Narrowed the publish job's credentials: nothing compiles in it. It repackages
+  each crate without building (`cargo package --locked --no-verify`), compares it
+  with the attested file, and only then requests the crates.io token, which exists
   only in the step running `cargo publish --locked --no-verify`. The release
   workflow's jobs no longer run for pull requests from forks. No crate or
   behavior change.
