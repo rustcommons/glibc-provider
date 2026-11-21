@@ -41,7 +41,13 @@ def verify(package, archive, attempts=12, delay=10):
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--archive", type=Path, help="the attested .crate file "
+                        "(default: target/package/<name>-<version>.crate)")
+    args = parser.parse_args()
     with open("Cargo.toml", "rb") as manifest:
         package = tomllib.load(manifest)["package"]
-    archive = Path("target/package") / f"{package['name']}-{package['version']}.crate"
-    verify(package, archive)
+    default = Path("target/package") / f"{package['name']}-{package['version']}.crate"
+    verify(package, args.archive or default)

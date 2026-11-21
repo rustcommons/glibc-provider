@@ -9,22 +9,16 @@ compiler-qualification or license scope changed. External consumers remain unkno
 
 The [Trusted Publishing workflow](../.github/workflows/trusted-publishing.yml)
 is the only publication route: the owner revoked the local crates.io token on
-2026-11-16, so no release is published from a maintainer machine. The workflow
-does not replace the reviewed release gates below or authorize a release. The owner must configure crates.io for
-crate `glibc-provider-sources`, repository owner `rustcommons`, repository
-`glibc-provider`, workflow `trusted-publishing.yml`, environment `crates-io`.
-The collector is unpublished and is never sent to crates.io.
-
-After candidate gates and review, an authorized new `v*` tag matching the manifest
-version triggers the workflow. The environment requires owner approval. The job
-checks release documents, packages and verifies the size limit, obtains a short-lived
-token, runs `cargo publish --locked -p glibc-provider-sources`, then compares the
-local archive SHA-256 with registry metadata and the official downloaded archive.
-Checksum mismatches fail; post-upload failures require investigation, never a
-retag or blind retry. Existing versions/tags must not be republished. GitHub notes
-and the existing postpublication checks still complete the release separately.
-Its first authorized use published 0.1.2 on 2026-11-19
-([record](#012-published-release-2026-11-19)). No binary distribution, legal gate or Tier 3 policy changes.
+2026-11-16, so no release is published from a maintainer machine. Since
+2026-11-21 it is the Rust Commons standard release pipeline; the step-by-step
+flow is in [RELEASING](RELEASING.md). crates.io binds it to crate
+`glibc-provider-sources`, repository `rustcommons/glibc-provider`, workflow
+`trusted-publishing.yml` and environment `crates-io`. The collector is
+unpublished and is never sent to crates.io. The workflow does not replace the
+reviewed release gates below or authorize a release. Existing versions and tags
+are never republished or moved. Its first authorized use published 0.1.2 on
+2026-11-19 with the earlier single-job workflow
+([record](#012-published-release-2026-11-19)).
 
 ## Release documentation policy
 
