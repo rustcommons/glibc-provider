@@ -95,6 +95,12 @@ user's go-ahead.
   run for other PRs and main; scheduled/manual replay remains available. Gate by
   PR author so maintainer reruns stay lean. Repository PR workflows cancel obsolete
   runs per PR; branch pushes must not duplicate PR runs.
+- Run jobs on explicit runner images (`ubuntu-24.04`, `windows-2025`), never
+  moving `-latest` labels. Moving to Ubuntu 26.04 or a newer Windows image is a
+  deliberate change in its own PR, with CI and Replay results reviewed.
+- Pin each `dtolnay/rust-toolchain` use to the commit of the branch named for its
+  exact toolchain (such as `1.99.0` or `1.90.0`), without a `toolchain:` input,
+  which a SHA pin ignores. Check `rustc --version` in the job log after a change.
 - Keep workflow permissions read-only at the top level; grant write permissions
   only to the job that needs them. Disable persisted checkout credentials.
 - Require green zizmor and cargo-deny checks for security workflow changes and
