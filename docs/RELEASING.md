@@ -32,10 +32,12 @@ authorization.
    CycloneDX SBOM and `SHA256SUMS`. Attestations sign SLSA build provenance for
    the `.crate` and the SBOM, saved as `glibc-provider-X.Y.Z.crates.intoto.jsonl`.
 4. **Owner approval.** `Publish to crates.io` waits for the owner's approval of
-   the `crates-io` environment. It repackages the crate, requires it to be
-   byte-identical (`cmp`) to the attested file, and publishes with a short-lived
-   Trusted Publishing token. A version crates.io already has is skipped, so a
-   re-run is safe.
+   the `crates-io` environment. Without any registry token, it repackages each
+   crate and requires it to be byte-identical (`cmp`) to the attested file.
+   Only then does it request a short-lived Trusted Publishing token, available
+   only to the step that runs `cargo publish --locked --no-verify` (the package
+   was already built and checked). A version crates.io already has is skipped,
+   so a re-run is safe.
 5. **GitHub release (automatic).** The pipeline creates release `vX.Y.Z` from
    `docs/releases/vX.Y.Z.md` and attaches the `.crate`, the SBOM, `SHA256SUMS`
    and the provenance bundle. The maintainer no longer creates the release by
@@ -48,7 +50,8 @@ authorization.
    checks in the [release plan](RELEASE-PLAN.md) in a docs-only PR.
 
 Manual runs from the Actions tab and PRs that touch the workflow, its scripts,
-`CHANGELOG.md` or `docs/releases/` are dry runs: gate and build only.
+`CHANGELOG.md` or `docs/releases/` are dry runs: gate and build only. PRs from
+forks do not run this workflow's jobs.
 
 ## Check the gate locally
 

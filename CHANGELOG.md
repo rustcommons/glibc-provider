@@ -14,6 +14,11 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Repository
 
+- Narrowed the publish job's credentials: it repackages and compares each crate
+  with the attested file before requesting the crates.io token, which then exists
+  only in the step running `cargo publish --locked --no-verify`. The release
+  workflow's jobs no longer run for pull requests from forks. No crate or
+  behavior change.
 - Adopted the Rust Commons standard release pipeline: `Trusted publishing` now
   gates on an annotated tag, green CI on `main`, a dated changelog entry and
   release notes; packages the crate with an SBOM and `SHA256SUMS`; signs SLSA
