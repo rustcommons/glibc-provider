@@ -12,6 +12,17 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ## [Unreleased]
 
+### Repository
+
+- Adopted the Rust Commons standard release pipeline: `Trusted publishing` now
+  gates on an annotated tag, green CI on `main`, a dated changelog entry and
+  release notes; packages the crate with an SBOM and `SHA256SUMS`; signs SLSA
+  provenance; publishes after owner approval; creates the GitHub Release from the
+  committed notes with the `.crate`, SBOM, `SHA256SUMS` and provenance bundle
+  attached; and verifies crates.io, attestations and docs.rs. See
+  [releasing](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASING.md).
+  No crate or behavior change.
+
 ### Security maintenance (repository only; no package change)
 
 - CI jobs run on explicit `ubuntu-24.04` and `windows-2025` runner images instead

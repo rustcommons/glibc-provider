@@ -12,6 +12,26 @@ README defects; see its [release record](RELEASE-PLAN.md#011-published-release-2
 The authorized 0.1.2 patch release fixes a panic on corrupt pack deltas; see its
 [release record](RELEASE-PLAN.md#012-published-release-2026-11-19).
 
+## Standard release pipeline
+
+Adopted on 2026-11-21 ([RELEASING](RELEASING.md)), following the cargo-libc
+pilot. The PR dry run exercised `gate` and `build` with `publish=false`, and the
+gate passed locally against the existing `v0.1.2` tag and refused a missing or
+undated changelog entry. Deferred, not lost:
+
+- **First tag run.** `attest`, `publish`, `github-release` and `verify` run only
+  on a tag; their first use is the next authorized release. Check attestation
+  signing and the bundle name, `gh attestation verify --bundle`, the docs.rs
+  bounded wait and asset upload on re-runs, and record the outcome.
+- **Release title format.** The pipeline titles a release with the notes' first
+  heading (`glibc-provider-sources vX.Y.Z`); releases 0.1.0 to 0.1.2 were titled
+  by hand without the `v`. Existing releases are left unchanged.
+- **Assets of past releases.** 0.1.0 to 0.1.2 have no attached `.crate`, SBOM,
+  checksums or provenance; they are not re-released or backfilled.
+- **Consumer check.** `verify` has no clean consumer build of the published
+  crate (the crate ships no executable); the record PR still notes any manual
+  consumer check, as for 0.1.2.
+
 ## Data crates
 
 - [ ] `glibc-provider-binaries` (the `prebuilt` mode's CI-built objects), after the
