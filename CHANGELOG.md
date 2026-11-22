@@ -14,6 +14,10 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Repository
 
+- Switched release provenance to the unified `actions/attest` action, preserving
+  the subject files, provenance bundle and workflow-based verification policy.
+  No crate or behavior change.
+
 - Narrowed the publish job's credentials: nothing compiles in it. It repackages
   each crate without building (`cargo package --locked --no-verify`), compares it
   with the attested file, and only then requests the crates.io token, which exists
