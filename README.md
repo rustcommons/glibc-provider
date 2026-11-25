@@ -60,6 +60,13 @@ See the [changelog](https://github.com/rustcommons/glibc-provider/blob/main/CHAN
 [release policy](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASE-PLAN.md#release-documentation-policy).
 The package is `glibc-provider-sources`; the repository is `glibc-provider`.
 
+For releases after 0.1.2, verify the downloaded checksum signature with
+`gpg --verify SHA256SUMS.asc SHA256SUMS`, using the release public key with primary
+fingerprint `B281C3010A76A11737B4D066C7396F6EA7647CC6`, then run
+`sha256sum --check SHA256SUMS`. See the
+[verification instructions](https://github.com/rustcommons/glibc-provider/blob/main/docs/RELEASING.md#verify-downloaded-release-assets)
+for the public key and isolated GnuPG setup. Earlier releases are unchanged.
+
 ## Provenance and licenses
 
 Inputs come from linux-abi-tools' qualified provider build trees, built from

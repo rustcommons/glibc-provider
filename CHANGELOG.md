@@ -14,6 +14,11 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Repository
 
+- Sign release checksums with the Rust Commons OpenPGP release key before
+  publishing, verify the pinned primary fingerprint and every listed asset,
+  and attach `SHA256SUMS.asc`. GitHub releases now validate assets in a draft
+  before publication and never replace existing files.
+
 - Switched release provenance to the unified `actions/attest` action, preserving
   the subject files, provenance bundle and workflow-based verification policy.
   No crate or behavior change.
