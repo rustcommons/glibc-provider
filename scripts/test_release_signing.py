@@ -121,6 +121,30 @@ class SigningTests(unittest.TestCase):
             public = signing.gpg(home, "--armor", "--export")
         signing._verify(self.manifest, public, primary)
 
+    def test_expired_sibling_does_not_reject_new_nonexpiring_subkey(self):
+        with signing.gpg_home() as home:
+            primary = self.historic_key(home, int(time.time()) - 3 * 86400)
+            signature = Path(str(self.manifest) + ".asc")
+            old_signature = signature.read_bytes()
+            signing.gpg(home, "--pinentry-mode", "loopback", "--passphrase", "",
+                        "--quick-add-key", primary, "ed25519", "sign", "0")
+            listing = signing.gpg(home, "--with-colons", "--list-keys").decode()
+            new_subkey = [line.split(":")[9] for line in listing.splitlines()
+                          if line.startswith("fpr:")][-1]
+            signature.unlink()
+            signing.gpg(home, "--pinentry-mode", "loopback", "--passphrase", "",
+                        "--local-user", new_subkey + "!", "--armor", "--detach-sign",
+                        "--output", str(signature), str(self.manifest))
+            public = signing.gpg(home, "--armor", "--export")
+            status = signing.gpg(home, "--status-fd", "1", "--verify",
+                                 str(signature), str(self.manifest))
+            self.assertIn(b"[GNUPG:] KEYEXPIRED ", status)
+            self.assertIn(b"[GNUPG:] GOODSIG ", status)
+            self.assertNotIn(b"[GNUPG:] EXPKEYSIG ", status)
+        signing._verify(self.manifest, public, primary)
+        signature.write_bytes(old_signature)
+        signing._verify(self.manifest, public, primary)
+
     def test_revoked_subkey_is_refused(self):
         with signing.gpg_home() as home:
             primary = self.historic_key(home, int(time.time()) - 600)
@@ -162,7 +186,7 @@ class SigningTests(unittest.TestCase):
                 signing.require_validsig(expired, self.primary, listing)
         listing = f"sub::::::101:\nfpr:::::::::{self.subkey}:\n".encode()
         signing.require_validsig(expired, self.primary, listing)
-        signing.require_validsig(valid + b"[GNUPG:] KEYEXPIRED 101\n", self.primary, listing)
+        signing.require_validsig(valid + b"[GNUPG:] KEYEXPIRED 101\n", self.primary)
 
 
 if __name__ == '__main__':
