@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -63,7 +64,7 @@ class SigningTests(unittest.TestCase):
     def test_tampered_manifest(self):
         self.sign_test()
         self.manifest.write_text(self.manifest.read_text() + "tampered\n")
-        with self.assertRaises(subprocess.CalledProcessError):
+        with self.assertRaises(ValueError):
             signing._verify(self.manifest, self.public, self.primary)
 
     def test_tampered_or_missing_asset(self):
@@ -94,8 +95,48 @@ class SigningTests(unittest.TestCase):
                                 capture_output=True)
         self.assertEqual(result.returncode, 2)
 
+    def historic_key(self, home, created):
+        signing.gpg(home, "--faked-system-time", str(created), "--pinentry-mode",
+                    "loopback", "--passphrase", "", "--quick-generate-key",
+                    "Historic test <historic@example.invalid>", "ed25519", "cert", "0")
+        primary = signing.primary_fingerprint(home)
+        signing.gpg(home, "--faked-system-time", str(created), "--pinentry-mode",
+                    "loopback", "--passphrase", "", "--quick-add-key",
+                    primary, "ed25519", "sign", "1d")
+        listing = signing.gpg(home, "--with-colons", "--list-keys").decode()
+        subkey = [line.split(":")[9] for line in listing.splitlines()
+                  if line.startswith("fpr:")][-1]
+        signing.gpg(home, "--faked-system-time", str(created + 60),
+                    "--pinentry-mode", "loopback", "--passphrase", "",
+                    "--local-user", subkey + "!", "--armor", "--detach-sign",
+                    "--output", str(self.manifest) + ".asc", str(self.manifest))
+        return primary
+
+    def test_expired_subkey_signed_before_expiry_is_accepted(self):
+        with signing.gpg_home() as home:
+            primary = self.historic_key(home, int(time.time()) - 3 * 86400)
+            status = signing.gpg(home, "--status-fd", "1", "--verify",
+                                 str(self.manifest) + ".asc", str(self.manifest), check=False)
+            self.assertIn(b"[GNUPG:] EXPKEYSIG ", status)
+            public = signing.gpg(home, "--armor", "--export")
+        signing._verify(self.manifest, public, primary)
+
+    def test_revoked_subkey_is_refused(self):
+        with signing.gpg_home() as home:
+            primary = self.historic_key(home, int(time.time()) - 600)
+            signing.gpg(home, "--command-fd", "0", "--yes", "--edit-key", primary,
+                        data=b"key 1\nrevkey\ny\n0\n\ny\nsave\n")
+            status = signing.gpg(home, "--status-fd", "1", "--verify",
+                                 str(self.manifest) + ".asc", str(self.manifest), check=False)
+            self.assertIn(b"[GNUPG:] REVKEYSIG ", status)
+            self.assertIn(b"[GNUPG:] VALIDSIG ", status)
+            public = signing.gpg(home, "--armor", "--export")
+        with self.assertRaisesRegex(ValueError, "revoked"):
+            signing._verify(self.manifest, public, primary)
+
     def test_status_parser_requires_primary_not_subkey(self):
-        status = (f"[GNUPG:] VALIDSIG {self.subkey} 2026-11-25 1 0 4 0 22 8 00 "
+        status = (f"[GNUPG:] GOODSIG {self.subkey[-16:]} test\n"
+                  f"[GNUPG:] VALIDSIG {self.subkey} 2026-11-25 1 0 4 0 22 8 00 "
                   f"{self.primary}\n").encode()
         signing.require_validsig(status, self.primary)
         for invalid in (b"", b"[GNUPG:] GOODSIG key name\n", status + status):
@@ -103,6 +144,25 @@ class SigningTests(unittest.TestCase):
                 signing.require_validsig(invalid, self.primary)
         with self.assertRaises(ValueError):
             signing.require_validsig(status, self.subkey)
+
+    def test_status_rejections_and_expiry_boundary(self):
+        valid = (f"[GNUPG:] GOODSIG key test\n[GNUPG:] VALIDSIG {self.subkey} "
+                 f"2026-11-25 100 0 4 0 22 8 00 {self.primary}\n").encode()
+        for refused in ("REVKEYSIG", "KEYREVOKED", "BADSIG", "ERRSIG", "EXPSIG", "NO_PUBKEY"):
+            with self.subTest(status=refused), self.assertRaises(ValueError):
+                signing.require_validsig(valid + f"[GNUPG:] {refused} key\n".encode(), self.primary)
+        for invalid in (valid.replace(b"GOODSIG", b"UNKNOWN"),
+                        valid + b"[GNUPG:] GOODSIG key test\n"):
+            with self.assertRaises(ValueError):
+                signing.require_validsig(invalid, self.primary)
+        expired = valid.replace(b"GOODSIG", b"EXPKEYSIG") + b"[GNUPG:] KEYEXPIRED 100\n"
+        for expiry in ("", "0", "99", "100", "unknown"):
+            listing = f"sub::::::{expiry}:\nfpr:::::::::{self.subkey}:\n".encode()
+            with self.subTest(expiry=expiry), self.assertRaises(ValueError):
+                signing.require_validsig(expired, self.primary, listing)
+        listing = f"sub::::::101:\nfpr:::::::::{self.subkey}:\n".encode()
+        signing.require_validsig(expired, self.primary, listing)
+        signing.require_validsig(valid + b"[GNUPG:] KEYEXPIRED 101\n", self.primary, listing)
 
 
 if __name__ == '__main__':

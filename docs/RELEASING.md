@@ -34,15 +34,16 @@ authorization.
 4. **Owner approval.** `Publish to crates.io` waits for the owner's approval of
    the `crates-io` environment. Nothing compiles in this job, because it holds
    `id-token` and the environment; the build job already built the packaged
-   source. It repackages each crate without building (`cargo package --locked
-   --no-verify`) and requires it to be byte-identical (`cmp`) to the attested
-   file. It signs `SHA256SUMS` with the `crates-io` environment secrets
-   `RELEASE_SIGNING_KEY` and `RELEASE_SIGNING_PASSPHRASE`, then verifies in a
-   separate temporary GnuPG home against the committed public key and pinned
-   primary fingerprint. Both homes and their agents are removed on success or
-   failure. Signing happens even when every crate is already published, and a
-   failure stops publication. Only then does it request a short-lived Trusted
-   Publishing token, available only to the step that runs `cargo publish --locked
+   source. Before Rust setup or any third-party action, it signs `SHA256SUMS`
+   with the `crates-io` environment secrets `RELEASE_SIGNING_KEY` and
+   `RELEASE_SIGNING_PASSPHRASE`, then verifies in a separate temporary GnuPG home
+   against the committed public key and pinned primary fingerprint. Both homes
+   and their agents are removed on success or failure. It then uses the runner's
+   own `rustup` to select Rust 1.99.0 and repackages each crate without building
+   (`cargo package --locked --no-verify`), requiring byte-identical (`cmp`)
+   output to the attested file. Signing happens even when every crate is already
+   published, and a failure stops publication. Only then does it request a
+   short-lived Trusted Publishing token, available only to the step that runs `cargo publish --locked
    --no-verify`. A version crates.io already has is skipped, so a re-run is safe.
 5. **GitHub release (automatic).** The pipeline creates release `vX.Y.Z` from
    `docs/releases/vX.Y.Z.md` as a draft and attaches the `.crate`, the SBOM,
@@ -107,3 +108,8 @@ accepted. From a reviewed checkout, `python3 scripts/release_signing.py verify
 /path/to/SHA256SUMS` automates the fingerprint, signature and checksum checks.
 The signing subkey is `248DFD639B75D1EFF2A87289D7C7DE7BBCCF35EC`; the verifier pins
 the primary identity so an owner-authorized subkey rotation can retain it.
+Revoked keys and bad, expired-signature or unknown-key statuses are refused.
+Verification requires exactly one good signature and one `VALIDSIG` for the
+pinned primary. An expired signing subkey is accepted only if the signature's
+creation timestamp precedes that subkey's expiry in the committed key, so old
+releases remain verifiable after routine rotation.
