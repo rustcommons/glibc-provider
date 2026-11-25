@@ -14,6 +14,10 @@ See the [versioned notes](https://github.com/rustcommons/glibc-provider/tree/mai
 
 ### Repository
 
+- Accept valid release signatures from a non-expiring subkey even when an old
+  sibling subkey has expired; keep accepting pre-expiry signatures from the old
+  subkey.
+
 - Sign release checksums with the Rust Commons OpenPGP release key before
   publishing, verify the pinned primary fingerprint and every listed asset,
   and attach `SHA256SUMS.asc`. Reject revoked signing keys; retain verification

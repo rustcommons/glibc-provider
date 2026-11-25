@@ -112,4 +112,6 @@ Revoked keys and bad, expired-signature or unknown-key statuses are refused.
 Verification requires exactly one good signature and one `VALIDSIG` for the
 pinned primary. An expired signing subkey is accepted only if the signature's
 creation timestamp precedes that subkey's expiry in the committed key, so old
-releases remain verifiable after routine rotation.
+releases remain verifiable after routine rotation. Only `EXPKEYSIG` triggers
+this expiry check; a sibling subkey's `KEYEXPIRED` status does not reject a good
+signature from the current signing subkey.

@@ -66,7 +66,8 @@ def require_validsig(status, expected, key_listing=b""):
     signature = signatures[0]
     if signature[-1] != expected:
         raise ValueError("Signature primary fingerprint does not match pin")
-    if any(record[0] in {"EXPKEYSIG", "KEYEXPIRED"} for record in records):
+    # KEYEXPIRED can refer to an unrelated sibling subkey.
+    if any(record[0] == "EXPKEYSIG" for record in records):
         expiries = {}
         expiry = ""
         for line in key_listing.decode().splitlines():
